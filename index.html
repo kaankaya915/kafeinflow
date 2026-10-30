@@ -6,11 +6,11 @@
   <title>KafeinFlow — Kandaki Aktif Kafein & Odak Takipçisi</title>
   <style>
     :root {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --surface-alt: #f1f5f9;
-      --border: #e2e8f0;
-      --text: #0f172a;
+      --bg: #eef2f6;
+      --surface: #f5f7fa;
+      --surface-alt: #e6ebf1;
+      --border: #d5dde7;
+      --text: #1e293b;
       --text-muted: #64748b;
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
@@ -21,69 +21,97 @@
       --risk-red-bg: rgba(239, 68, 68, 0.10);
       --radius: 14px;
       --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-      --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.05), #ffffff 60%);
-      --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.05), #ffffff 60%);
-      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.05), #ffffff 60%);
-      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.10), #fff1f2 75%);
-      --notice-bg: #fff1f2;
-      --notice-border: #fecdd3;
-      --notice-text: #9f1239;
-      --notice-strong: #881337;
-      --pill-active-bg: #eff6ff;
-      --chip-active-bg: #dbeafe;
+      --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.08), #f5f7fa 65%);
+      --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.08), #f5f7fa 65%);
+      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.08), #f5f7fa 65%);
+      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.12), #f8e8ea 75%);
+      --notice-bg: #f9ebed;
+      --notice-border: #f3c2c8;
+      --notice-text: #881337;
+      --notice-strong: #701a32;
+      --pill-active-bg: #e4eefb;
+      --chip-active-bg: #dbe7f7;
       --chip-active-border: #93c5fd;
       --chip-active-text: #1e40af;
-      --dose-preview-bg: #f8fafc;
+      --dose-preview-bg: #eaeff5;
       --dose-preview-border: #cbd5e1;
-      --planner-bg: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
-      --planner-border: #bbf7d0;
+      --planner-bg: linear-gradient(135deg, #e7f6ee 0%, #e6effa 100%);
+      --planner-border: #b5e2c8;
       --planner-title: #065f46;
-      --plan-step-bg: rgba(255, 255, 255, 0.88);
+      --plan-step-bg: rgba(241, 245, 249, 0.88);
       --plan-step-border: rgba(16, 185, 129, 0.25);
       --plan-tag: #047857;
-      --planner-math-bg: rgba(255, 255, 255, 0.65);
+      --planner-math-bg: rgba(226, 232, 240, 0.72);
       --planner-math-text: #334155;
-      --badge-tol-bg: #dbeafe;
+      --badge-tol-bg: #dbe7f7;
       --badge-tol-text: #1e40af;
-      --step-hover: #e2e8f0;
+      --step-hover: #d8e0ea;
+      --status-low-bg: #e2e8f0;
+      --status-low-text: #475569;
+      --status-flow-bg: #ccebd9;
+      --status-flow-text: #065f46;
+      --status-high-bg: #f5e4b8;
+      --status-high-text: #92400e;
+      --status-risk-bg: #f5d0d0;
+      --status-risk-text: #991b1b;
+      --btn-del-bg: #f3d2d2;
+      --btn-del-hover: #eababa;
+      --btn-del-text: #b91c1c;
+      --btn-edit-bg: #d6e4f7;
+      --btn-edit-hover: #bfd6f3;
+      --btn-edit-text: #1d4ed8;
     }
 
     html[data-theme="dark"] {
       color-scheme: dark;
-      --bg: #0b1220;
-      --surface: #111827;
-      --surface-alt: #1e293b;
-      --border: #334155;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
+      --bg: #0b111d;
+      --surface: #131c2b;
+      --surface-alt: #1c283b;
+      --border: #2b394f;
+      --text: #cbd5e1;
+      --text-muted: #8899ac;
       --primary: #3b82f6;
       --primary-hover: #2563eb;
       --shadow: 0 8px 28px -6px rgba(0, 0, 0, 0.45), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
-      --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.14), #111827 60%);
-      --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.14), #111827 60%);
-      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.14), #111827 60%);
-      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.22), #3f1d24 75%);
-      --notice-bg: #3f1d24;
-      --notice-border: #7f1d1d;
-      --notice-text: #fecdd3;
-      --notice-strong: #fda4af;
-      --pill-active-bg: #1e3a5f;
-      --chip-active-bg: #1e3a5f;
+      --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.14), #131c2b 65%);
+      --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.14), #131c2b 65%);
+      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.14), #131c2b 65%);
+      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.22), #351a22 75%);
+      --notice-bg: #311a21;
+      --notice-border: #69232b;
+      --notice-text: #e2b8c0;
+      --notice-strong: #f497a3;
+      --pill-active-bg: #1b3252;
+      --chip-active-bg: #1b3252;
       --chip-active-border: #3b82f6;
-      --chip-active-text: #bfdbfe;
-      --dose-preview-bg: #0f172a;
-      --dose-preview-border: #475569;
-      --planner-bg: linear-gradient(135deg, #052e1c 0%, #0f1f3a 100%);
-      --planner-border: #14532d;
+      --chip-active-text: #b6d2f8;
+      --dose-preview-bg: #101725;
+      --dose-preview-border: #3b4c66;
+      --planner-bg: linear-gradient(135deg, #0b2920 0%, #112038 100%);
+      --planner-border: #1b4b35;
       --planner-title: #6ee7b7;
-      --plan-step-bg: rgba(15, 23, 42, 0.72);
-      --plan-step-border: rgba(16, 185, 129, 0.35);
+      --plan-step-bg: rgba(24, 34, 50, 0.85);
+      --plan-step-border: rgba(16, 185, 129, 0.28);
       --plan-tag: #34d399;
-      --planner-math-bg: rgba(15, 23, 42, 0.55);
-      --planner-math-text: #cbd5e1;
-      --badge-tol-bg: #1e3a5f;
+      --planner-math-bg: rgba(22, 31, 46, 0.78);
+      --planner-math-text: #b6c2d1;
+      --badge-tol-bg: #1b3252;
       --badge-tol-text: #93c5fd;
-      --step-hover: #334155;
+      --step-hover: #2a394f;
+      --status-low-bg: #233044;
+      --status-low-text: #94a3b8;
+      --status-flow-bg: rgba(16, 185, 129, 0.18);
+      --status-flow-text: #6ee7b7;
+      --status-high-bg: rgba(245, 158, 11, 0.18);
+      --status-high-text: #fcd34d;
+      --status-risk-bg: rgba(239, 68, 68, 0.20);
+      --status-risk-text: #fca5a5;
+      --btn-del-bg: rgba(239, 68, 68, 0.18);
+      --btn-del-hover: rgba(239, 68, 68, 0.30);
+      --btn-del-text: #fca5a5;
+      --btn-edit-bg: rgba(59, 130, 246, 0.20);
+      --btn-edit-hover: rgba(59, 130, 246, 0.32);
+      --btn-edit-text: #93c5fd;
     }
 
     .theme-toggle {
@@ -280,7 +308,7 @@
       width: 18px;
       left: 3px;
       bottom: 3px;
-      background-color: white;
+      background-color: #e2e8f0;
       transition: 0.25s;
       border-radius: 50%;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
@@ -735,7 +763,7 @@
     .planner-header h3 {
       font-size: 0.96rem;
       font-weight: 700;
-      color: #065f46;
+      color: var(--planner-title);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -846,29 +874,29 @@
     }
 
     .status-flow {
-      background: #d1fae5;
-      color: #065f46;
+      background: var(--status-flow-bg);
+      color: var(--status-flow-text);
     }
 
     .status-low {
-      background: #f1f5f9;
-      color: #475569;
+      background: var(--status-low-bg);
+      color: var(--status-low-text);
     }
 
     .status-high {
-      background: #fef3c7;
-      color: #92400e;
+      background: var(--status-high-bg);
+      color: var(--status-high-text);
     }
 
     .status-risk {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--status-risk-bg);
+      color: var(--status-risk-text);
     }
 
     .btn-del {
       border: none;
-      background: #fee2e2;
-      color: #b91c1c;
+      background: var(--btn-del-bg);
+      color: var(--btn-del-text);
       width: 26px;
       height: 26px;
       border-radius: 6px;
@@ -882,13 +910,13 @@
     }
 
     .btn-del:hover {
-      background: #fecaca;
+      background: var(--btn-del-hover);
     }
 
     .btn-edit {
       border: none;
-      background: #dbeafe;
-      color: #1d4ed8;
+      background: var(--btn-edit-bg);
+      color: var(--btn-edit-text);
       width: 26px;
       height: 26px;
       border-radius: 6px;
@@ -902,7 +930,7 @@
     }
 
     .btn-edit:hover {
-      background: #bfdbfe;
+      background: var(--btn-edit-hover);
     }
 
     .row-actions {
@@ -1377,7 +1405,7 @@
           <div class="planner-card">
             <div class="planner-header">
               <h3>🎯 Kilonuza Özel Optimal Odak (Flow) Protokolü</h3>
-              <button type="button" class="btn-secondary" id="applyOptimalPlanBtn" style="border-color:#059669; color:#065f46; font-weight:700;">
+              <button type="button" class="btn-secondary" id="applyOptimalPlanBtn" style="border-color:var(--plan-tag); color:var(--planner-title); font-weight:700;">
                 Bu Planı Grafiğe Uygula
               </button>
             </div>

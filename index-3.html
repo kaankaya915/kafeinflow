@@ -1,0 +1,2615 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KafeinFlow — Kandaki Aktif Kafein & Odak Takipçisi</title>
+  <style>
+    :root {
+      --bg: #eef2f6;
+      --surface: #f5f7fa;
+      --surface-alt: #e6ebf1;
+      --border: #d5dde7;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --flow-green: #10b981;
+      --flow-green-bg: rgba(16, 185, 129, 0.12);
+      --warn-amber: #f59e0b;
+      --risk-red: #ef4444;
+      --risk-red-bg: rgba(239, 68, 68, 0.10);
+      --radius: 14px;
+      --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+      --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.08), #f5f7fa 65%);
+      --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.08), #f5f7fa 65%);
+      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.08), #f5f7fa 65%);
+      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.12), #f8e8ea 75%);
+      --notice-bg: #f9ebed;
+      --notice-border: #f3c2c8;
+      --notice-text: #881337;
+      --notice-strong: #701a32;
+      --pill-active-bg: #e4eefb;
+      --chip-active-bg: #dbe7f7;
+      --chip-active-border: #93c5fd;
+      --chip-active-text: #1e40af;
+      --dose-preview-bg: #eaeff5;
+      --dose-preview-border: #cbd5e1;
+      --planner-bg: linear-gradient(135deg, #e7f6ee 0%, #e6effa 100%);
+      --planner-border: #b5e2c8;
+      --planner-title: #065f46;
+      --plan-step-bg: rgba(241, 245, 249, 0.88);
+      --plan-step-border: rgba(16, 185, 129, 0.25);
+      --plan-tag: #047857;
+      --planner-math-bg: rgba(226, 232, 240, 0.72);
+      --planner-math-text: #334155;
+      --badge-tol-bg: #dbe7f7;
+      --badge-tol-text: #1e40af;
+      --step-hover: #d8e0ea;
+      --status-low-bg: #e2e8f0;
+      --status-low-text: #475569;
+      --status-flow-bg: #ccebd9;
+      --status-flow-text: #065f46;
+      --status-high-bg: #f5e4b8;
+      --status-high-text: #92400e;
+      --status-risk-bg: #f5d0d0;
+      --status-risk-text: #991b1b;
+      --btn-del-bg: #f3d2d2;
+      --btn-del-hover: #eababa;
+      --btn-del-text: #b91c1c;
+      --btn-edit-bg: #d6e4f7;
+      --btn-edit-hover: #bfd6f3;
+      --btn-edit-text: #1d4ed8;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0b111d;
+      --surface: #131c2b;
+      --surface-alt: #1c283b;
+      --border: #2b394f;
+      --text: #cbd5e1;
+      --text-muted: #8899ac;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --shadow: 0 8px 28px -6px rgba(0, 0, 0, 0.45), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+      --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.14), #131c2b 65%);
+      --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.14), #131c2b 65%);
+      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.14), #131c2b 65%);
+      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.22), #351a22 75%);
+      --notice-bg: #311a21;
+      --notice-border: #69232b;
+      --notice-text: #e2b8c0;
+      --notice-strong: #f497a3;
+      --pill-active-bg: #1b3252;
+      --chip-active-bg: #1b3252;
+      --chip-active-border: #3b82f6;
+      --chip-active-text: #b6d2f8;
+      --dose-preview-bg: #101725;
+      --dose-preview-border: #3b4c66;
+      --planner-bg: linear-gradient(135deg, #0b2920 0%, #112038 100%);
+      --planner-border: #1b4b35;
+      --planner-title: #6ee7b7;
+      --plan-step-bg: rgba(24, 34, 50, 0.85);
+      --plan-step-border: rgba(16, 185, 129, 0.28);
+      --plan-tag: #34d399;
+      --planner-math-bg: rgba(22, 31, 46, 0.78);
+      --planner-math-text: #b6c2d1;
+      --badge-tol-bg: #1b3252;
+      --badge-tol-text: #93c5fd;
+      --step-hover: #2a394f;
+      --status-low-bg: #233044;
+      --status-low-text: #94a3b8;
+      --status-flow-bg: rgba(16, 185, 129, 0.18);
+      --status-flow-text: #6ee7b7;
+      --status-high-bg: rgba(245, 158, 11, 0.18);
+      --status-high-text: #fcd34d;
+      --status-risk-bg: rgba(239, 68, 68, 0.20);
+      --status-risk-text: #fca5a5;
+      --btn-del-bg: rgba(239, 68, 68, 0.18);
+      --btn-del-hover: rgba(239, 68, 68, 0.30);
+      --btn-del-text: #fca5a5;
+      --btn-edit-bg: rgba(59, 130, 246, 0.20);
+      --btn-edit-hover: rgba(59, 130, 246, 0.32);
+      --btn-edit-text: #93c5fd;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      line-height: 1;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--surface-alt);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle .icon-sun {
+      display: none;
+    }
+
+    html[data-theme="dark"] .theme-toggle .icon-moon {
+      display: none;
+    }
+
+    html[data-theme="dark"] .theme-toggle .icon-sun {
+      display: inline;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px 16px 48px 72px;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    .brand h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Profile & Tolerance Bar */
+    .profile-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .profile-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .profile-field label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .weight-input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 10px;
+    }
+
+    .weight-input-wrap input {
+      width: 58px;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      outline: none;
+    }
+
+    .weight-input-wrap span {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .divider-v {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    /* Switch */
+    .tolerance-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #cbd5e1;
+      transition: 0.25s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #e2e8f0;
+      transition: 0.25s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .tolerance-label {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tolerance-label strong {
+      font-size: 0.85rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-tol {
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--badge-tol-bg);
+      color: var(--badge-tol-text);
+      font-weight: 700;
+    }
+
+    .tolerance-label small {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title span.sub {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* Metric Strip */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 960px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .metric-box {
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .metric-box.flow {
+      border-left: 4px solid var(--flow-green);
+      background: var(--metric-flow-bg);
+    }
+
+    .metric-box.risk {
+      border-left: 4px solid var(--risk-red);
+      background: var(--metric-risk-bg);
+    }
+
+    .metric-box.peak {
+      border-left: 4px solid var(--primary);
+    }
+
+    .metric-box.daily {
+      border-left: 4px solid var(--warn-amber);
+      background: var(--metric-daily-bg);
+      transition: all 0.2s;
+    }
+
+    .metric-box.daily.exceeded {
+      border-left-color: var(--risk-red);
+      border-color: var(--notice-border);
+      background: var(--metric-daily-exceeded-bg);
+    }
+
+    .metric-box.daily.exceeded .metric-value {
+      color: var(--notice-strong);
+    }
+
+    .metric-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .metric-note {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    /* Risk Warning Banner */
+    .clinical-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      background: var(--notice-bg);
+      border: 1px solid var(--notice-border);
+      color: var(--notice-text);
+      font-size: 0.81rem;
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    .clinical-notice strong {
+      color: var(--notice-strong);
+    }
+
+    /* Category Tabs */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: var(--surface-alt);
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 8px 6px;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .form-group label span.hint {
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    select, input[type="number"], input[type="time"], input[type="text"] {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-size: 0.9rem;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Size Selector Pills */
+    .pill-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .pill-group.cols-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .pill-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 8px 8px;
+      border-radius: 9px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .pill-btn .p-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+    }
+
+    .pill-btn .p-sub {
+      font-size: 0.71rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 1px;
+    }
+
+    .pill-btn.active {
+      border-color: var(--primary);
+      background: var(--pill-active-bg);
+    }
+
+    .pill-btn.active .p-title {
+      color: var(--primary);
+    }
+
+    /* Quick chips */
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 7px;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chip:hover, .chip.active {
+      background: var(--chip-active-bg);
+      border-color: var(--chip-active-border);
+      color: var(--chip-active-text);
+    }
+
+    /* Extra shots stepper */
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-alt);
+      padding: 6px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+    }
+
+    .stepper-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-btn:hover {
+      background: var(--step-hover);
+    }
+
+    /* Dose Preview Box */
+    .dose-preview {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--dose-preview-bg);
+      border: 1px dashed var(--dose-preview-border);
+      border-radius: 9px;
+      margin-bottom: 14px;
+      font-size: 0.83rem;
+    }
+
+    .dose-preview strong {
+      font-size: 1rem;
+      color: var(--primary);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 11px 16px;
+      border: none;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      padding: 7px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-alt);
+    }
+
+    /* Chart Canvas Container */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      margin-bottom: 12px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    /* Optimal Focus Planner Card */
+    .planner-card {
+      margin-top: 18px;
+      background: var(--planner-bg);
+      border: 1px solid var(--planner-border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .planner-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .planner-header h3 {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--planner-title);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .planner-steps {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .planner-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .plan-step {
+      background: var(--plan-step-bg);
+      border: 1px solid var(--plan-step-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .plan-step .step-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--plan-tag);
+      margin-bottom: 4px;
+    }
+
+    .plan-step .step-main {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .plan-step .step-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .planner-math {
+      font-size: 0.77rem;
+      color: var(--planner-math-text);
+      background: var(--planner-math-bg);
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Tables */
+    .tables-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 860px) {
+      .tables-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+
+    th, td {
+      padding: 9px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: var(--surface-alt);
+      font-weight: 700;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      z-index: 1;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .status-flow {
+      background: var(--status-flow-bg);
+      color: var(--status-flow-text);
+    }
+
+    .status-low {
+      background: var(--status-low-bg);
+      color: var(--status-low-text);
+    }
+
+    .status-high {
+      background: var(--status-high-bg);
+      color: var(--status-high-text);
+    }
+
+    .status-risk {
+      background: var(--status-risk-bg);
+      color: var(--status-risk-text);
+    }
+
+    .btn-del {
+      border: none;
+      background: var(--btn-del-bg);
+      color: var(--btn-del-text);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .btn-del:hover {
+      background: var(--btn-del-hover);
+    }
+
+    .btn-edit {
+      border: none;
+      background: var(--btn-edit-bg);
+      color: var(--btn-edit-text);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .btn-edit:hover {
+      background: var(--btn-edit-hover);
+    }
+
+    .row-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    tr.drink-row {
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    tr.drink-row:hover {
+      background-color: var(--surface-alt);
+    }
+
+    /* Sağ Alt Günlük Sınır Özeti ve Aşım Uyarısı */
+    .daily-intake-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .daily-intake-bar strong {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .daily-intake-bar.exceeded {
+      background: var(--notice-bg);
+      border-color: var(--notice-border);
+      color: var(--notice-text);
+    }
+
+    .daily-intake-bar.exceeded strong {
+      color: var(--notice-strong);
+    }
+
+    .daily-limit-alert {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      background: var(--notice-bg);
+      border: 1px solid var(--notice-border);
+      color: var(--notice-text);
+      font-size: 0.79rem;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .daily-limit-alert.show {
+      display: flex;
+    }
+
+    /* Modals (Sınır Aşım Onayı & İçecek Düzenleme) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.2);
+      width: 100%;
+      max-width: 430px;
+      padding: 20px;
+      animation: modalFadeIn 0.16s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .modal-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-body {
+      font-size: 0.86rem;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .modal-warn-box {
+      background: var(--notice-bg);
+      border: 1px solid var(--notice-border);
+      border-radius: 10px;
+      padding: 11px 13px;
+      color: var(--notice-strong);
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--step-hover);
+    }
+
+    .btn-danger-confirm {
+      padding: 9px 14px;
+      border: none;
+      border-radius: 9px;
+      background: var(--risk-red);
+      color: #ffffff;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-danger-confirm:hover {
+      background: #dc2626;
+    }
+
+    .btn-save {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 9px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-save:hover {
+      background: var(--primary-hover);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 24px 12px;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
+    .tooltip-box {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(15, 23, 42, 0.92);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+      display: none;
+      z-index: 10;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <button type="button" class="theme-toggle" id="themeToggle" title="Temayı Değiştir" aria-label="Temayı Değiştir">
+    <span class="icon-moon">🌙</span>
+    <span class="icon-sun">☀️</span>
+  </button>
+
+  <div class="container">
+    <!-- Üst Başlık ve Kişisel Ayarlar -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">☕</div>
+        <div>
+          <h1>KafeinFlow</h1>
+          <p>Kandaki Aktif Kafein Kinetiği ve Optimal Odak (Flow) Takipçisi</p>
+        </div>
+      </div>
+
+      <div class="profile-bar">
+        <div class="profile-field">
+          <label for="weightInput">Vücut Ağırlığı:</label>
+          <div class="weight-input-wrap">
+            <input type="number" id="weightInput" value="70" min="35" max="180" step="1" />
+            <span>kg</span>
+          </div>
+        </div>
+
+        <div class="divider-v"></div>
+
+        <label class="tolerance-wrap" for="toleranceToggle" title="Sürekli kahve tüketiminde adenozin reseptör yoğunluğu arttığı için odaklanma ve aşırı uyarılma eşikleri yaklaşık %25 yükselir.">
+          <div class="switch">
+            <input type="checkbox" id="toleranceToggle" />
+            <span class="slider"></span>
+          </div>
+          <div class="tolerance-label">
+            <strong>Kafein Direnci (Tolerans) <span class="badge-tol">+%25 Eşik</span></strong>
+            <small>Düzenli tüketiciler için reseptör adaptasyonu</small>
+          </div>
+        </label>
+      </div>
+    </header>
+
+    <!-- Özet Metrik Kartları -->
+    <div class="metrics-grid">
+      <div class="metric-box flow">
+        <div class="metric-label">İdeal Odak (Flow) Aralığı</div>
+        <div class="metric-value" id="flowRangeText">105 – 210 mg</div>
+        <div class="metric-note" id="flowSubText">Ders çalışmak ve derin odaklanma için optimal aktif kafein bandı (1.5 – 3.0 mg/kg)</div>
+      </div>
+
+      <div class="metric-box risk">
+        <div class="metric-label">Riskli Sınır (Aşırı Yüklenme)</div>
+        <div class="metric-value" id="riskLimitText">294 mg üstü</div>
+        <div class="metric-note" id="riskSubText">Bilişsel verimin düşebileceği ve otonom yan etkilerin başlayabileceği sınır (4.2 mg/kg)</div>
+      </div>
+
+      <div class="metric-box peak">
+        <div class="metric-label">Günün Zirve Aktif Kafeini</div>
+        <div class="metric-value" id="peakActiveText">0 mg</div>
+        <div class="metric-note" id="flowDurationText">Flow bölgesinde geçirilen toplam süre: 0 saat</div>
+      </div>
+
+      <div class="metric-box daily" id="dailyMetricBox">
+        <div class="metric-label">Günlük Toplam Kafein Sınırı</div>
+        <div class="metric-value" id="dailyTotalText">240 / 399 mg</div>
+        <div class="metric-note" id="dailySubText">Kilonuza göre önerilen günlük üst sınır (5.7 mg/kg)</div>
+      </div>
+    </div>
+
+    <!-- Klinik / Ergonomik Bilgi Notu -->
+    <div class="clinical-notice">
+      <span>⚠️</span>
+      <div>
+        <strong>Aşırı Uyarılma Notu (<span id="noticeLimitSpan">294 mg</span> üzeri):</strong>
+        Kandaki aktif kafein miktarı bu eşiği aştığında odaklanmayı artırmak yerine ters etki yaratarak bilişsel performansı düşürebilir; dikkat dağınıklığı, huzursuzluk, kalp çarpıntısı ve ince kas titremelerine (tremor) neden olabilir.
+      </div>
+    </div>
+
+    <!-- Ana İçerik: Sol Panel (Kahve Ekleme) & Sağ Panel (Grafik + Tablo + Öneri) -->
+    <div class="main-grid">
+      <!-- SOL PANEL: İçecek Ekleme -->
+      <div class="card">
+        <div class="card-title">
+          <span>Kafein Tüketimi Ekle</span>
+          <span class="sub">Yarı ömür: ~5 saat</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="classic">Klasik Kahve</button>
+          <button class="tab-btn" data-tab="espresso">Espresso</button>
+          <button class="tab-btn" data-tab="filter">Filtre (ml)</button>
+          <button class="tab-btn" data-tab="custom">Direkt (mg)</button>
+        </div>
+
+        <!-- TAB 1: Klasik Kafe Kahveleri -->
+        <div id="tab-classic" class="tab-pane">
+          <div class="form-group">
+            <label>Kahve Türü <span class="hint">Standart Kafe Barista Ölçüsü</span></label>
+            <select id="classicType">
+              <option value="americano">Americano</option>
+              <option value="latte">Caffè Latte</option>
+              <option value="cappuccino">Cappuccino</option>
+              <option value="flatwhite">Flat White</option>
+              <option value="cortado">Cortado</option>
+              <option value="mocha">Caffè Mocha</option>
+              <option value="macchiato">Caramel Macchiato</option>
+              <option value="coldbrew">Cold Brew</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Boy Seçimi <span class="hint" id="sizeShotHint">Ortalama espresso shot bazlı</span></label>
+            <div class="pill-group" id="sizePills">
+              <div class="pill-btn" data-size="S">
+                <span class="p-title">Küçük</span>
+                <span class="p-sub" id="sub-S">1 Shot • 75mg</span>
+              </div>
+              <div class="pill-btn active" data-size="M">
+                <span class="p-title">Orta</span>
+                <span class="p-sub" id="sub-M">2 Shot • 150mg</span>
+              </div>
+              <div class="pill-btn" data-size="L">
+                <span class="p-title">Büyük</span>
+                <span class="p-sub" id="sub-L">3 Shot • 225mg</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Ekstra Espresso Shot <span class="hint">+75 mg / shot</span></label>
+            <div class="stepper">
+              <span id="extraShotLabel" style="font-size:0.84rem;font-weight:600;">Ekstra Shot Yok (0)</span>
+              <div class="stepper-btns">
+                <button type="button" class="step-btn" id="extraMinus">−</button>
+                <button type="button" class="step-btn" id="extraPlus">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Espresso -->
+        <div id="tab-espresso" class="tab-pane" style="display:none;">
+          <div class="form-group">
+            <label>Espresso Shot Sayısı <span class="hint">1 Shot ≈ 75 mg kafein</span></label>
+            <div class="pill-group cols-4" id="espressoPills">
+              <div class="pill-btn" data-shots="1">
+                <span class="p-title">Single</span>
+                <span class="p-sub">1 Shot • 75mg</span>
+              </div>
+              <div class="pill-btn active" data-shots="2">
+                <span class="p-title">Double</span>
+                <span class="p-sub">2 Shot • 150mg</span>
+              </div>
+              <div class="pill-btn" data-shots="3">
+                <span class="p-title">Triple</span>
+                <span class="p-sub">3 Shot • 225mg</span>
+              </div>
+              <div class="pill-btn" data-shots="4">
+                <span class="p-title">Quad</span>
+                <span class="p-sub">4 Shot • 300mg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Filtre Kahve (ml) -->
+        <div id="tab-filter" class="tab-pane" style="display:none;">
+          <div class="form-group">
+            <label for="filterMlInput">Filtre Kahve Miktarı (ml) <span class="hint">~45 mg / 100 ml</span></label>
+            <input type="number" id="filterMlInput" value="250" min="50" max="1500" step="25" />
+            <div class="chip-row" id="filterChips">
+              <span class="chip" data-ml="150">150 ml</span>
+              <span class="chip" data-ml="200">200 ml</span>
+              <span class="chip active" data-ml="250">250 ml (Kupa)</span>
+              <span class="chip" data-ml="300">300 ml</span>
+              <span class="chip" data-ml="400">400 ml (Termos)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: Direkt Kafein (mg) -->
+        <div id="tab-custom" class="tab-pane" style="display:none;">
+          <div class="form-group">
+            <label for="customMgInput">Kafein Miktarı (mg) <span class="hint">Enerji içeceği, takviye vb.</span></label>
+            <input type="number" id="customMgInput" value="80" min="10" max="600" step="10" />
+            <div class="chip-row" id="customChips">
+              <span class="chip active" data-mg="80" data-label="Enerji İçeceği (250ml)">Enerji İçeceği (80mg)</span>
+              <span class="chip" data-mg="150" data-label="Büyük Enerji İçeceği (500ml)">Monster/Büyük (150mg)</span>
+              <span class="chip" data-mg="200" data-label="Kafein Tablet / Pre-Workout">Kafein Hapı (200mg)</span>
+              <span class="chip" data-mg="45" data-label="Siyah Çay">Siyah Çay (45mg)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ortak Alanlar: İçiş Saati & İçiş Süresi -->
+        <div class="form-group">
+          <label for="startTimeInput">Başlangıç Saati <span class="hint">İçmeye başladığınız saat</span></label>
+          <input type="time" id="startTimeInput" value="09:00" />
+        </div>
+
+        <div class="form-group">
+          <label for="durationInput">İçiş Süresi <span class="hint" id="durationWindowHint">09:00 – 09:30 arası tüketim</span></label>
+          <div class="chip-row" id="durationChips" style="margin-bottom:8px;">
+            <span class="chip" data-dur="5">Hızlı (5 dk)</span>
+            <span class="chip" data-dur="15">15 dk</span>
+            <span class="chip active" data-dur="30">30 dk</span>
+            <span class="chip" data-dur="60">1 Saat</span>
+            <span class="chip" data-dur="90">1.5 Saat</span>
+            <span class="chip" data-dur="120">2 Saat</span>
+            <span class="chip" data-dur="180">3 Saat</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" id="durationInput" value="30" min="1" max="360" step="5" />
+            <span style="font-size:0.82rem; color:var(--text-muted); white-space:nowrap;">dakika boyunca</span>
+          </div>
+        </div>
+
+        <div class="dose-preview">
+          <span>Eklenecek Toplam Kafein:</span>
+          <strong id="previewMgText">150 mg</strong>
+        </div>
+
+        <button type="button" class="btn-primary" id="addDrinkBtn">+ Grafiğe ve Tabloya Ekle</button>
+      </div>
+
+      <!-- SAĞ PANEL: Grafik, Optimal Odak Planlayıcı ve Tablolar -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <span>Kandaki Aktif Kafein Grafiği (Zamana Göre)</span>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn-secondary" id="clearAllBtn">Temizle</button>
+            </div>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="caffeineChart"></canvas>
+            <div class="tooltip-box" id="chartTooltip"></div>
+          </div>
+
+          <div class="chart-legend">
+            <div class="legend-item">
+              <span class="dot" style="background: var(--flow-green);"></span>
+              <span><strong>Yeşil Alan:</strong> İdeal Flow / Ders & Odak Bölgesi</span>
+            </div>
+            <div class="legend-item">
+              <span class="dot" style="background: var(--risk-red);"></span>
+              <span><strong>Kırmızı Üst Kısım:</strong> Riskli Sınırı Aşan Aşırı Yüklenme Bölgesi</span>
+            </div>
+            <div class="legend-item">
+              <span class="dot" style="background: var(--primary);"></span>
+              <span><strong>Mavi/Turuncu Eğri:</strong> Emilim ve Yarı Ömür Azalış Eğrisi</span>
+            </div>
+          </div>
+
+          <!-- Kiloya Göre Hesaplanan Optimal Odak Önerisi -->
+          <div class="planner-card">
+            <div class="planner-header">
+              <h3>🎯 Kilonuza Özel Optimal Odak (Flow) Protokolü</h3>
+              <button type="button" class="btn-secondary" id="applyOptimalPlanBtn" style="border-color:var(--plan-tag); color:var(--planner-title); font-weight:700;">
+                Bu Planı Grafiğe Uygula
+              </button>
+            </div>
+            <div class="planner-steps">
+              <div class="plan-step">
+                <div class="step-tag">1. Başlangıç Dozu (Flow'a Giriş)</div>
+                <div class="step-main" id="planStep1Main">45 dk içinde 200 mg kafein</div>
+                <div class="step-desc" id="planStep1Desc">Örn: 440 ml Filtre Kahve veya 1 Orta Boy Americano + 1 Shot</div>
+              </div>
+              <div class="plan-step">
+                <div class="step-tag">2. Takviye Dozu (Flow Sürekliliği)</div>
+                <div class="step-main" id="planStep2Main">3.5 saat sonra, 30 dk içinde 90 mg kafein</div>
+                <div class="step-desc" id="planStep2Desc">Aktif kafein alt sınıra inerken tekrar ideal banda taşır (~6.5 saat kesintisiz odak).</div>
+              </div>
+            </div>
+            <div class="planner-math" id="plannerMathNote">
+              <span>Hesaplama: 70 kg için hedef aktif merkez 158 mg (2.25 mg/kg). Emilim kaybı ve 5 saatlik yarı ömür dikkate alınmıştır.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alt Tablolar: 1) Saatlik Aktif Kafein Tablosu, 2) Eklenen Kahveler Listesi -->
+        <div class="tables-grid">
+          <div class="card">
+            <div class="card-title">
+              <span>Saatlik Aktif Kafein Tablosu</span>
+              <span class="sub">30 dk aralıklı özet</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Saat</th>
+                    <th>Aktif Kafein</th>
+                    <th>Yoğunluk</th>
+                    <th>Durum</th>
+                  </tr>
+                </thead>
+                <tbody id="timelineTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card" id="consumedDrinksCard">
+            <div class="card-title">
+              <span>Tüketilen İçecekler</span>
+              <span class="sub" id="totalIntakeCount">0 içecek</span>
+            </div>
+
+            <div class="daily-intake-bar" id="dailyIntakeBar">
+              <span>Günlük Alınan Toplam: <strong id="dailyIntakeSummary">0 / 399 mg</strong></span>
+              <span id="dailyIntakeRateNote" style="font-size:0.75rem; color:var(--text-muted);">Sınır: 5.7 mg/kg</span>
+            </div>
+
+            <div class="daily-limit-alert" id="dailyLimitAlert">
+              <span>⚠️</span>
+              <div id="dailyLimitAlertText">
+                <strong>Günlük Önerilen Kafein Sınırı Aşıldı!</strong> Bugün aldığınız toplam kafein kilonuza göre hesaplanan güvenli sınırı geçti.
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>İçecek <small style="font-weight:500; text-transform:none;">(düzenlemek için tıkla)</small></th>
+                    <th>Saat & Süre</th>
+                    <th>Kafein</th>
+                    <th style="text-align:right;">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="drinksTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: Günlük Kafein Sınırı Aşım Onay Uyarısı -->
+  <div class="modal-backdrop" id="limitConfirmModal" role="dialog" aria-modal="true" aria-labelledby="limitConfirmTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="limitConfirmTitle">⚠️ Bugün önerilen miktarın üstüne çıktınız</h3>
+      </div>
+      <div class="modal-body">
+        <p id="limitConfirmDesc">
+          Bu eklemeyle birlikte günlük toplam kafein tüketiminiz kilonuza göre önerilen güvenli sınırı aşacak.
+        </p>
+        <div class="modal-warn-box" id="limitConfirmDetails"></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="limitCancelBtn">İptal</button>
+        <button type="button" class="btn-danger-confirm" id="limitConfirmBtn">Ne yaptığımı biliyorum</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Geçmiş Kafein Alımını Düzenleme -->
+  <div class="modal-backdrop" id="editDrinkModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="editModalTitle">✎ Kafein Alımını Düzenle</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editTitleInput">İçecek Adı</label>
+          <input type="text" id="editTitleInput" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:9px; font-size:0.9rem;" />
+        </div>
+
+        <div class="form-group">
+          <label for="editStartTimeInput">Başlangıç Saati <span class="hint">İçmeye başladığınız saat</span></label>
+          <input type="time" id="editStartTimeInput" />
+        </div>
+
+        <div class="form-group">
+          <label for="editDurationInput">İçiş Süresi <span class="hint" id="editDurationWindowHint">09:00 – 09:30 arası</span></label>
+          <div class="chip-row" id="editDurationChips" style="margin-bottom:8px;">
+            <span class="chip" data-dur="5">5 dk</span>
+            <span class="chip" data-dur="10">10 dk</span>
+            <span class="chip" data-dur="15">15 dk</span>
+            <span class="chip" data-dur="30">30 dk</span>
+            <span class="chip" data-dur="45">45 dk</span>
+            <span class="chip" data-dur="60">1 Saat</span>
+            <span class="chip" data-dur="90">1.5 Saat</span>
+            <span class="chip" data-dur="120">2 Saat</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" id="editDurationInput" min="1" max="360" step="1" />
+            <span style="font-size:0.82rem; color:var(--text-muted); white-space:nowrap;">dakika boyunca</span>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="editMgInput">Kafein Miktarı (mg)</label>
+          <input type="number" id="editMgInput" min="5" max="1000" step="5" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="editCancelBtn">İptal</button>
+        <button type="button" class="btn-save" id="editSaveBtn">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- KAHVE VERİTABANI (Klasik Kafe Türleri ve Boylara Göre Shot / Kafein Miktarları) ---
+    const COFFEE_MENU = {
+      americano: {
+        name: "Americano",
+        sizes: {
+          S: { label: "Küçük", shots: 1, mg: 75 },
+          M: { label: "Orta", shots: 2, mg: 150 },
+          L: { label: "Büyük", shots: 3, mg: 225 }
+        }
+      },
+      latte: {
+        name: "Caffè Latte",
+        sizes: {
+          S: { label: "Küçük", shots: 1, mg: 75 },
+          M: { label: "Orta", shots: 2, mg: 150 },
+          L: { label: "Büyük", shots: 3, mg: 225 }
+        }
+      },
+      cappuccino: {
+        name: "Cappuccino",
+        sizes: {
+          S: { label: "Küçük", shots: 1, mg: 75 },
+          M: { label: "Orta", shots: 2, mg: 150 },
+          L: { label: "Büyük", shots: 3, mg: 225 }
+        }
+      },
+      flatwhite: {
+        name: "Flat White",
+        sizes: {
+          S: { label: "Küçük", shots: 2, mg: 130 },
+          M: { label: "Orta", shots: 2, mg: 150 },
+          L: { label: "Büyük", shots: 3, mg: 225 }
+        }
+      },
+      cortado: {
+        name: "Cortado",
+        sizes: {
+          S: { label: "Küçük", shots: 2, mg: 130 },
+          M: { label: "Orta", shots: 2, mg: 150 },
+          L: { label: "Büyük", shots: 3, mg: 210 }
+        }
+      },
+      mocha: {
+        name: "Caffè Mocha",
+        sizes: {
+          S: { label: "Küçük", shots: 1, mg: 80 },
+          M: { label: "Orta", shots: 2, mg: 155 },
+          L: { label: "Büyük", shots: 3, mg: 230 }
+        }
+      },
+      macchiato: {
+        name: "Caramel Macchiato",
+        sizes: {
+          S: { label: "Küçük", shots: 1, mg: 75 },
+          M: { label: "Orta", shots: 2, mg: 150 },
+          L: { label: "Büyük", shots: 3, mg: 225 }
+        }
+      },
+      coldbrew: {
+        name: "Cold Brew",
+        sizes: {
+          S: { label: "Küçük", shots: 0, mg: 155 },
+          M: { label: "Orta", shots: 0, mg: 205 },
+          L: { label: "Büyük", shots: 0, mg: 260 }
+        }
+      }
+    };
+
+    const SHOT_CAFFEINE_MG = 75;
+    const FILTER_MG_PER_100ML = 45; // 100 ml filtre kahvede ortalama 45 mg kafein
+    const HALF_LIFE_HOURS = 5.0;    // Kafein yarı ömrü (saat)
+    const ABSORPTION_KA = 3.2;      // Mide-bağırsak emilim hız sabiti (1/saat)
+
+    // Uygulama Durumu
+    let state = {
+      weight: 70,
+      toleranceOn: false,
+      toleranceFactor: 1.25, // Düzenli kahve içicilerinde adenozin reseptör adaptasyonu için +%25
+      activeTab: "classic",
+      selectedSize: "M",
+      extraShots: 0,
+      espressoShots: 2,
+      filterMl: 250,
+      customMg: 80,
+      customLabel: "Enerji İçeceği (250ml)",
+      startTime: "09:00",
+      durationMin: 30,
+      drinks: [
+        {
+          id: 1,
+          title: "Orta Boy Flat White (2 Shot)",
+          startMin: 9 * 60,
+          durationMin: 60,
+          mg: 150
+        },
+        {
+          id: 2,
+          title: "Filtre Kahve (200 ml)",
+          startMin: 13 * 60,
+          durationMin: 30,
+          mg: 90
+        }
+      ]
+    };
+
+    // DOM Referansları
+    const weightInput = document.getElementById("weightInput");
+    const toleranceToggle = document.getElementById("toleranceToggle");
+    const flowRangeText = document.getElementById("flowRangeText");
+    const flowSubText = document.getElementById("flowSubText");
+    const riskLimitText = document.getElementById("riskLimitText");
+    const riskSubText = document.getElementById("riskSubText");
+    const noticeLimitSpan = document.getElementById("noticeLimitSpan");
+    const peakActiveText = document.getElementById("peakActiveText");
+    const flowDurationText = document.getElementById("flowDurationText");
+
+    const classicType = document.getElementById("classicType");
+    const sizePills = document.getElementById("sizePills");
+    const extraShotLabel = document.getElementById("extraShotLabel");
+    const extraMinus = document.getElementById("extraMinus");
+    const extraPlus = document.getElementById("extraPlus");
+    const espressoPills = document.getElementById("espressoPills");
+    const filterMlInput = document.getElementById("filterMlInput");
+    const filterChips = document.getElementById("filterChips");
+    const customMgInput = document.getElementById("customMgInput");
+    const customChips = document.getElementById("customChips");
+    const startTimeInput = document.getElementById("startTimeInput");
+    const durationInput = document.getElementById("durationInput");
+    const durationChips = document.getElementById("durationChips");
+    const durationWindowHint = document.getElementById("durationWindowHint");
+    const previewMgText = document.getElementById("previewMgText");
+    const addDrinkBtn = document.getElementById("addDrinkBtn");
+    const clearAllBtn = document.getElementById("clearAllBtn");
+    const applyOptimalPlanBtn = document.getElementById("applyOptimalPlanBtn");
+
+    const canvas = document.getElementById("caffeineChart");
+    const tooltip = document.getElementById("chartTooltip");
+    const timelineTableBody = document.getElementById("timelineTableBody");
+    const drinksTableBody = document.getElementById("drinksTableBody");
+    const totalIntakeCount = document.getElementById("totalIntakeCount");
+
+    const dailyMetricBox = document.getElementById("dailyMetricBox");
+    const dailyTotalText = document.getElementById("dailyTotalText");
+    const dailySubText = document.getElementById("dailySubText");
+    const dailyIntakeBar = document.getElementById("dailyIntakeBar");
+    const dailyIntakeSummary = document.getElementById("dailyIntakeSummary");
+    const dailyIntakeRateNote = document.getElementById("dailyIntakeRateNote");
+    const dailyLimitAlert = document.getElementById("dailyLimitAlert");
+    const dailyLimitAlertText = document.getElementById("dailyLimitAlertText");
+
+    // Modal DOM Referansları
+    const limitConfirmModal = document.getElementById("limitConfirmModal");
+    const limitConfirmDesc = document.getElementById("limitConfirmDesc");
+    const limitConfirmDetails = document.getElementById("limitConfirmDetails");
+    const limitCancelBtn = document.getElementById("limitCancelBtn");
+    const limitConfirmBtn = document.getElementById("limitConfirmBtn");
+
+    const editDrinkModal = document.getElementById("editDrinkModal");
+    const editTitleInput = document.getElementById("editTitleInput");
+    const editStartTimeInput = document.getElementById("editStartTimeInput");
+    const editDurationInput = document.getElementById("editDurationInput");
+    const editDurationChips = document.getElementById("editDurationChips");
+    const editDurationWindowHint = document.getElementById("editDurationWindowHint");
+    const editMgInput = document.getElementById("editMgInput");
+    const editCancelBtn = document.getElementById("editCancelBtn");
+    const editSaveBtn = document.getElementById("editSaveBtn");
+
+    let pendingActionCallback = null;
+    let editingDrinkId = null;
+
+    // Yardımcı Fonksiyonlar
+    function minToTimeStr(totalMin) {
+      const m = ((Math.round(totalMin) % 1440) + 1440) % 1440;
+      const hh = String(Math.floor(m / 60)).padStart(2, "0");
+      const mm = String(m % 60).padStart(2, "0");
+      return `${hh}:${mm}`;
+    }
+
+    function timeStrToMin(str) {
+      const parts = (str || "09:00").split(":");
+      return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+    }
+
+    function getThresholds() {
+      const mult = state.toleranceOn ? state.toleranceFactor : 1.0;
+      const flowMin = Math.round(state.weight * 1.5 * mult);
+      const flowMax = Math.round(state.weight * 3.0 * mult);
+      const riskLimit = Math.round(state.weight * 4.2 * mult);
+      const dailyLimitPerKg = +(5.7 * mult).toFixed(1);
+      const dailyLimit = Math.round(state.weight * 5.7 * mult);
+      return { flowMin, flowMax, riskLimit, dailyLimit, dailyLimitPerKg, mult };
+    }
+
+    function getTotalDailyMg(drinksList = state.drinks) {
+      return drinksList.reduce((sum, d) => sum + (Number(d.mg) || 0), 0);
+    }
+
+    // Seçili Sekmeye Göre Eklenecek İçecek Bilgisini Hesapla
+    function getCurrentDrinkDraft() {
+      let mg = 0;
+      let title = "";
+
+      if (state.activeTab === "classic") {
+        const item = COFFEE_MENU[classicType.value];
+        const sz = item.sizes[state.selectedSize];
+        const extraMg = state.extraShots * SHOT_CAFFEINE_MG;
+        mg = sz.mg + extraMg;
+        const shotText = sz.shots > 0 ? `${sz.shots} Shot` : "Demleme";
+        const extraText = state.extraShots > 0 ? ` + ${state.extraShots} Ekstra Shot` : "";
+        title = `${sz.label} Boy ${item.name} (${shotText}${extraText})`;
+      } else if (state.activeTab === "espresso") {
+        mg = state.espressoShots * SHOT_CAFFEINE_MG;
+        title = `Espresso (${state.espressoShots} Shot)`;
+      } else if (state.activeTab === "filter") {
+        const ml = Math.max(10, Number(filterMlInput.value) || 250);
+        mg = Math.round((ml / 100) * FILTER_MG_PER_100ML);
+        title = `Filtre Kahve (${ml} ml)`;
+      } else if (state.activeTab === "custom") {
+        mg = Math.max(5, Number(customMgInput.value) || 80);
+        title = `${state.customLabel || "Doğrudan Kafein"} (${mg} mg)`;
+      }
+
+      const startMin = timeStrToMin(startTimeInput.value);
+      const durationMin = Math.max(1, Number(durationInput.value) || 30);
+
+      return { title, mg, startMin, durationMin };
+    }
+
+    function updateClassicSizeLabels() {
+      const item = COFFEE_MENU[classicType.value];
+      ["S", "M", "L"].forEach((szKey) => {
+        const info = item.sizes[szKey];
+        const el = document.getElementById(`sub-${szKey}`);
+        if (info.shots > 0) {
+          el.textContent = `${info.shots} Shot • ${info.mg}mg`;
+        } else {
+          el.textContent = `${info.mg}mg`;
+        }
+      });
+    }
+
+    function updateDraftUI() {
+      updateClassicSizeLabels();
+      extraShotLabel.textContent =
+        state.extraShots === 0
+          ? "Ekstra Shot Yok (0)"
+          : `+${state.extraShots} Ekstra Shot (+${state.extraShots * SHOT_CAFFEINE_MG} mg)`;
+
+      const draft = getCurrentDrinkDraft();
+      previewMgText.textContent = `${draft.mg} mg`;
+      const endMin = draft.startMin + draft.durationMin;
+      durationWindowHint.textContent = `${minToTimeStr(draft.startMin)} – ${minToTimeStr(endMin)} arası tüketim`;
+    }
+
+    // --- FARMAKOKİNETİK SİMÜLASYON (1 Dakika Çözünürlüklü 2 Bölmeli Emilim + Yarı Ömür Modeli) ---
+    // Başlangıç saatini ilk içecekten (veya 08:00'den) başlatıp 18 saatlik pencereyi simüle eder.
+    function simulateCaffeineCurve() {
+      let startWindowMin = 8 * 60; // Varsayılan 08:00
+      if (state.drinks.length > 0) {
+        const earliest = Math.min(...state.drinks.map((d) => d.startMin));
+        startWindowMin = Math.min(8 * 60, Math.floor(earliest / 60) * 60);
+      }
+      const totalSpanMin = 18 * 60; // 18 saatlik görünüm
+      const ke = Math.LN2 / (HALF_LIFE_HOURS * 60); // 1/dk eliminasyon sabiti
+      const ka = ABSORPTION_KA / 60;                // 1/dk emilim sabiti
+
+      let gut = 0;   // Mide-bağırsak bölmesindeki henüz emilmemiş kafein (mg)
+      let blood = 0; // Kandaki aktif kafein (mg)
+
+      const points = [];
+
+      for (let step = 0; step <= totalSpanMin; step++) {
+        const currentMin = startWindowMin + step;
+
+        // Bu dakikada içilmekte olan tüm kahvelerden gelen kafein akışı (mg/dk)
+        let infusionRate = 0;
+        for (const d of state.drinks) {
+          const dur = Math.max(1, d.durationMin);
+          if (currentMin >= d.startMin && currentMin < d.startMin + dur) {
+            infusionRate += d.mg / dur;
+          }
+        }
+
+        // Diferansiyel adım (1 dk):
+        // Emilim ile bağırsaktan kana geçiş + yarı ömre göre kandan atılım
+        const absorbed = ka * gut;
+        const eliminated = ke * blood;
+
+        gut = gut + infusionRate - absorbed;
+        blood = Math.max(0, blood + absorbed - eliminated);
+
+        points.push({
+          step,
+          timeMin: currentMin,
+          timeLabel: minToTimeStr(currentMin),
+          activeMg: blood
+        });
+      }
+
+      return { points, startWindowMin, totalSpanMin };
+    }
+
+    // --- KİLOYA ÖZEL OPTİMAL ODAK (FLOW) PLANLAYICI ---
+    function updateOptimalPlanner() {
+      const { flowMin, flowMax, mult } = getThresholds();
+      // Hedefimiz kişiyi Flow bölgesinin tam güvenli merkezine (yaklaşık 2.25 mg/kg * tolerans) taşımak
+      const targetCenterMg = Math.round(state.weight * 2.25 * mult);
+
+      // 45 dakikalık içiş süresinde emilim-eliminasyon tepe verimi ~0.80 olduğundan:
+      const dose1Mg = Math.round(targetCenterMg / 0.80 / 5) * 5;
+      const dose1FilterMl = Math.round((dose1Mg / FILTER_MG_PER_100ML) * 100 / 10) * 10;
+      const dose1Shots = (dose1Mg / SHOT_CAFFEINE_MG).toFixed(1).replace(".0", "");
+
+      // İlk dozdan yaklaşık 3.5 saat sonra aktif kafein alt Flow sınırına (flowMin) yaklaşır.
+      // Tekrar merkeze çıkarmak için gereken takviye dozu:
+      const boosterNeededActive = Math.max(40, targetCenterMg - Math.round(flowMin * 1.05));
+      const dose2Mg = Math.round(boosterNeededActive / 0.82 / 5) * 5;
+      const dose2FilterMl = Math.round((dose2Mg / FILTER_MG_PER_100ML) * 100 / 10) * 10;
+
+      document.getElementById("planStep1Main").textContent =
+        `Şimdi 45 dk içinde ${dose1Mg} mg kafein`;
+      document.getElementById("planStep1Desc").textContent =
+        `Pratik karşılığı: ${dose1FilterMl} ml Filtre Kahve veya ${dose1Shots} Shot Espresso bazlı kahve (09:00 – 09:45)`;
+
+      document.getElementById("planStep2Main").textContent =
+        `3.5 saat sonra, 30 dk içinde ${dose2Mg} mg kafein`;
+      document.getElementById("planStep2Desc").textContent =
+        `Pratik karşılığı: ${dose2FilterMl} ml Filtre Kahve (12:30 – 13:00). Riskli sınıra çıkmadan ~6.5 saat kesintisiz Flow sağlar.`;
+
+      document.getElementById("plannerMathNote").innerHTML =
+        `<span><strong>Matematiksel Model:</strong> ${state.weight} kg ${state.toleranceOn ? "(+%25 direnç açık)" : ""} için ideal merkez <strong>${targetCenterMg} mg</strong> aktif kafeindir. 45 dk yayılımlı emilim ve 5 saat yarı ömür hesaba katılmıştır.</span>`;
+
+      // Buton için plan verisini sakla
+      applyOptimalPlanBtn.dataset.dose1 = dose1Mg;
+      applyOptimalPlanBtn.dataset.ml1 = dose1FilterMl;
+      applyOptimalPlanBtn.dataset.dose2 = dose2Mg;
+      applyOptimalPlanBtn.dataset.ml2 = dose2FilterMl;
+    }
+
+    // --- GRAFİK ÇİZİMİ (Yeşil Flow Bölgesi + Sadece Risk Sınırını Aşan Üst Kısım Kırmızı) ---
+    let latestSim = null;
+
+    function drawChart(hoverIndex = null) {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      const ctx = canvas.getContext("2d");
+      ctx.scale(dpr, dpr);
+
+      const W = rect.width;
+      const H = rect.height;
+      const pad = { top: 24, right: 24, bottom: 34, left: 48 };
+      const plotW = W - pad.left - pad.right;
+      const plotH = H - pad.top - pad.bottom;
+
+      ctx.clearRect(0, 0, W, H);
+
+      const { flowMin, flowMax, riskLimit } = getThresholds();
+      const sim = latestSim;
+      const maxCurveMg = Math.max(...sim.points.map((p) => p.activeMg), 0);
+      const yMax = Math.max(Math.ceil((riskLimit * 1.28) / 50) * 50, Math.ceil((maxCurveMg * 1.15) / 50) * 50);
+
+      const xOf = (step) => pad.left + (step / sim.totalSpanMin) * plotW;
+      const yOf = (mg) => pad.top + plotH - (mg / yMax) * plotH;
+
+      const yFlowMin = yOf(flowMin);
+      const yFlowMax = yOf(flowMax);
+      const yRisk = yOf(riskLimit);
+
+      // 1. İdeal Flow Bölgesi Arka Plan Şeridi (Yeşil)
+      ctx.fillStyle = "rgba(16, 185, 129, 0.13)";
+      ctx.fillRect(pad.left, yFlowMax, plotW, yFlowMin - yFlowMax);
+
+      // 2. Riskli Sınır Üstü Hafif Uyarı Şeridi (Sadece grafiğin üst kısmında)
+      if (yRisk > pad.top) {
+        ctx.fillStyle = "rgba(239, 68, 68, 0.06)";
+        ctx.fillRect(pad.left, pad.top, plotW, yRisk - pad.top);
+      }
+
+      // Yatay Kılavuz Çizgileri
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      ctx.strokeStyle = isDark ? "#334155" : "#e2e8f0";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = isDark ? "#94a3b8" : "#64748b";
+      ctx.font = "11px sans-serif";
+      ctx.textAlign = "right";
+
+      const ySteps = 5;
+      for (let i = 0; i <= ySteps; i++) {
+        const val = Math.round((yMax / ySteps) * i);
+        const y = yOf(val);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(pad.left + plotW, y);
+        ctx.stroke();
+        ctx.fillText(`${val} mg`, pad.left - 8, y + 4);
+      }
+
+      // Saat Ekseni (X Ekseni)
+      ctx.textAlign = "center";
+      for (let m = 0; m <= sim.totalSpanMin; m += 120) {
+        const x = xOf(m);
+        const label = minToTimeStr(sim.startWindowMin + m);
+        ctx.fillText(label, x, H - 10);
+      }
+
+      // Flow Alt & Üst Sınır Kesikli Çizgileri
+      ctx.save();
+      ctx.setLineDash([5, 5]);
+      ctx.strokeStyle = "#10b981";
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, yFlowMin);
+      ctx.lineTo(pad.left + plotW, yFlowMin);
+      ctx.moveTo(pad.left, yFlowMax);
+      ctx.lineTo(pad.left + plotW, yFlowMax);
+      ctx.stroke();
+
+      // Riskli Sınır Kesikli Çizgisi (Kırmızı)
+      ctx.strokeStyle = "#ef4444";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, yRisk);
+      ctx.lineTo(pad.left + plotW, yRisk);
+      ctx.stroke();
+      ctx.restore();
+
+      // Bölge Etiketleri
+      ctx.textAlign = "left";
+      ctx.font = "600 11px sans-serif";
+      ctx.fillStyle = isDark ? "#34d399" : "#047857";
+      ctx.fillText(`İdeal Flow Bölgesi (${flowMin}–${flowMax} mg)`, pad.left + 8, yFlowMax + 14);
+
+      ctx.fillStyle = isDark ? "#f87171" : "#b91c1c";
+      ctx.fillText(`Riskli Sınır / Aşırı Uyarılma (${riskLimit} mg)`, pad.left + 8, Math.max(pad.top + 12, yRisk - 6));
+
+      // Eğri Yolu Oluşturucu
+      function traceCurvePath() {
+        ctx.beginPath();
+        sim.points.forEach((pt, idx) => {
+          const x = xOf(pt.step);
+          const y = yOf(pt.activeMg);
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+      }
+
+      function traceAreaPath(baselineY) {
+        ctx.beginPath();
+        sim.points.forEach((pt, idx) => {
+          const x = xOf(pt.step);
+          const y = yOf(pt.activeMg);
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.lineTo(xOf(sim.totalSpanMin), baselineY);
+        ctx.lineTo(xOf(0), baselineY);
+        ctx.closePath();
+      }
+
+      // 3. Normal & Yeşil Flow Bölgesi Dolgusu (Risk sınırının altında kalan kısım)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pad.left, yRisk, plotW, pad.top + plotH - yRisk);
+      ctx.clip();
+
+      const gradNormal = ctx.createLinearGradient(0, yFlowMax, 0, pad.top + plotH);
+      gradNormal.addColorStop(0, "rgba(16, 185, 129, 0.30)");
+      gradNormal.addColorStop(1, "rgba(37, 99, 235, 0.06)");
+      traceAreaPath(pad.top + plotH);
+      ctx.fillStyle = gradNormal;
+      ctx.fill();
+
+      // Flow bölgesi içindeki alanı ekstra belirgin yeşil doldur
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pad.left, yFlowMax, plotW, yFlowMin - yFlowMax);
+      ctx.clip();
+      traceAreaPath(yFlowMin);
+      ctx.fillStyle = "rgba(16, 185, 129, 0.36)";
+      ctx.fill();
+      ctx.restore();
+
+      // Normal/Flow Çizgisi
+      traceCurvePath();
+      ctx.strokeStyle = "#059669";
+      ctx.lineWidth = 2.6;
+      ctx.stroke();
+      ctx.restore();
+
+      // 4. SADECE ÜST TARAFTA KALAN RİSKLİ KISIM KIRMIZI (y < yRisk)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(pad.left, pad.top, plotW, Math.max(0, yRisk - pad.top));
+      ctx.clip();
+
+      traceAreaPath(yRisk);
+      const gradRed = ctx.createLinearGradient(0, pad.top, 0, yRisk);
+      gradRed.addColorStop(0, "rgba(239, 68, 68, 0.55)");
+      gradRed.addColorStop(1, "rgba(239, 68, 68, 0.22)");
+      ctx.fillStyle = gradRed;
+      ctx.fill();
+
+      traceCurvePath();
+      ctx.strokeStyle = "#dc2626";
+      ctx.lineWidth = 3.0;
+      ctx.stroke();
+      ctx.restore();
+
+      // Kahve İçiş Başlangıç Noktalarını İşaretle
+      state.drinks.forEach((d) => {
+        const step = d.startMin - sim.startWindowMin;
+        if (step >= 0 && step <= sim.totalSpanMin) {
+          const pt = sim.points[step];
+          const x = xOf(step);
+          const y = yOf(pt.activeMg);
+          ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = "#1e293b";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+        }
+      });
+
+      // Hover Noktası
+      if (hoverIndex !== null && sim.points[hoverIndex]) {
+        const pt = sim.points[hoverIndex];
+        const x = xOf(pt.step);
+        const y = yOf(pt.activeMg);
+
+        ctx.save();
+        ctx.strokeStyle = "#94a3b8";
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(x, pad.top);
+        ctx.lineTo(x, pad.top + plotH);
+        ctx.stroke();
+
+        ctx.fillStyle = pt.activeMg > riskLimit ? "#ef4444" : pt.activeMg >= flowMin && pt.activeMg <= flowMax ? "#10b981" : "#2563eb";
+        ctx.beginPath();
+        ctx.arc(x, y, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    // --- ANA GÜNCELLEME FONKSİYONU ---
+    function renderAll() {
+      const { flowMin, flowMax, riskLimit, dailyLimit, dailyLimitPerKg, mult } = getThresholds();
+      const totalDailyMg = getTotalDailyMg();
+      const totalDailyPerKg = (totalDailyMg / state.weight).toFixed(1);
+      const isDailyExceeded = totalDailyMg > dailyLimit;
+
+      // Üst Kartları Güncelle
+      flowRangeText.textContent = `${flowMin} – ${flowMax} mg`;
+      flowSubText.textContent = `Optimal odak bandı (${(1.5 * mult).toFixed(1)} – ${(3.0 * mult).toFixed(1)} mg/kg)`;
+      riskLimitText.textContent = `${riskLimit} mg üstü`;
+      riskSubText.textContent = `Aşırı uyarılma sınırı (${(4.2 * mult).toFixed(1)} mg/kg)`;
+      noticeLimitSpan.textContent = `${riskLimit} mg`;
+
+      dailyTotalText.textContent = `${totalDailyMg} / ${dailyLimit} mg`;
+      if (isDailyExceeded) {
+        dailyMetricBox.classList.add("exceeded");
+        dailySubText.textContent = `⚠️ Günlük sınır ${totalDailyMg - dailyLimit} mg aşıldı! (${totalDailyPerKg} / ${dailyLimitPerKg} mg/kg)`;
+      } else {
+        dailyMetricBox.classList.remove("exceeded");
+        dailySubText.textContent = `Önerilen günlük sınır: ${dailyLimit} mg (${dailyLimitPerKg} mg/kg)`;
+      }
+
+      // Sağ Alttaki Günlük Kafein Özeti ve Aşım Uyarısını Güncelle
+      dailyIntakeSummary.textContent = `${totalDailyMg} / ${dailyLimit} mg (${totalDailyPerKg} mg/kg)`;
+      dailyIntakeRateNote.textContent = `Önerilen: maks. ${dailyLimitPerKg} mg/kg`;
+
+      if (isDailyExceeded) {
+        dailyIntakeBar.classList.add("exceeded");
+        dailyLimitAlert.classList.add("show");
+        dailyLimitAlertText.innerHTML = `
+          <strong>Günlük Kafein Sınırı Aşıldı!</strong> Bugün toplam <strong>${totalDailyMg} mg</strong> (${totalDailyPerKg} mg/kg) kafein aldınız. Kilonuza (${state.weight} kg) göre önerilen günlük üst sınır <strong>${dailyLimit} mg</strong> seviyesindedir (<strong>+${totalDailyMg - dailyLimit} mg</strong> aşım).
+        `;
+      } else {
+        dailyIntakeBar.classList.remove("exceeded");
+        dailyLimitAlert.classList.remove("show");
+      }
+
+      // Simülasyonu Çalıştır
+      latestSim = simulateCaffeineCurve();
+
+      const peakMg = Math.round(Math.max(...latestSim.points.map((p) => p.activeMg), 0));
+      const peakMgPerKg = (peakMg / state.weight).toFixed(1);
+      peakActiveText.textContent = `${peakMg} mg (${peakMgPerKg} mg/kg)`;
+
+      const flowMinutes = latestSim.points.filter(
+        (p) => p.activeMg >= flowMin && p.activeMg <= flowMax
+      ).length;
+      const flowHours = (flowMinutes / 60).toFixed(1).replace(".0", "");
+      flowDurationText.textContent = `Flow bölgesinde geçirilen süre: ${flowHours} saat (${flowMinutes} dk)`;
+
+      // Optimal Odak Planlayıcıyı Güncelle
+      updateOptimalPlanner();
+
+      // Grafiği Çiz
+      drawChart();
+
+      // Saatlik Aktif Kafein Tablosunu Güncelle (30 dakikalık dilimler)
+      timelineTableBody.innerHTML = "";
+      for (let step = 0; step <= latestSim.totalSpanMin; step += 30) {
+        const pt = latestSim.points[step];
+        if (!pt) continue;
+        const mg = Math.round(pt.activeMg);
+        const mgKg = (pt.activeMg / state.weight).toFixed(2);
+
+        let statusClass = "status-low";
+        let statusLabel = "Bazal / Düşük";
+        if (mg > riskLimit) {
+          statusClass = "status-risk";
+          statusLabel = "Riskli Sınır Üstü";
+        } else if (mg > flowMax) {
+          statusClass = "status-high";
+          statusLabel = "Yüksek Uyarılma";
+        } else if (mg >= flowMin) {
+          statusClass = "status-flow";
+          statusLabel = "İdeal Flow (Odak)";
+        }
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${pt.timeLabel}</strong></td>
+          <td><strong>${mg} mg</strong></td>
+          <td>${mgKg} mg/kg</td>
+          <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+        `;
+        timelineTableBody.appendChild(tr);
+      }
+
+      // Tüketilen İçecekler Tablosunu Güncelle
+      totalIntakeCount.textContent = `${state.drinks.length} içecek`;
+      drinksTableBody.innerHTML = "";
+
+      if (state.drinks.length === 0) {
+        drinksTableBody.innerHTML = `
+          <tr>
+            <td colspan="4" class="empty-state">Henüz kahve veya kafein eklenmedi. Sol panelden içecek ekleyebilirsiniz.</td>
+          </tr>
+        `;
+      } else {
+        const sorted = [...state.drinks].sort((a, b) => a.startMin - b.startMin);
+        sorted.forEach((d) => {
+          const endStr = minToTimeStr(d.startMin + d.durationMin);
+          const tr = document.createElement("tr");
+          tr.className = "drink-row";
+          tr.dataset.id = d.id;
+          tr.title = "Bu kafein alımını düzenlemek için tıklayın";
+          tr.innerHTML = `
+            <td><strong>${d.title}</strong></td>
+            <td>${minToTimeStr(d.startMin)} – ${endStr} <small style="color:var(--text-muted);">(${d.durationMin} dk)</small></td>
+            <td><strong>${d.mg} mg</strong></td>
+            <td style="text-align:right; white-space:nowrap;">
+              <div class="row-actions">
+                <button type="button" class="btn-edit" data-id="${d.id}" title="Düzenle">✎</button>
+                <button type="button" class="btn-del" data-id="${d.id}" title="Sil">×</button>
+              </div>
+            </td>
+          `;
+          drinksTableBody.appendChild(tr);
+        });
+      }
+    }
+
+    // --- ETKİLEŞİMLER VE OLAY DİNLEYİCİLERİ ---
+    weightInput.addEventListener("input", () => {
+      const val = Number(weightInput.value);
+      if (val >= 30 && val <= 200) {
+        state.weight = val;
+        renderAll();
+      }
+    });
+
+    toleranceToggle.addEventListener("change", () => {
+      state.toleranceOn = toleranceToggle.checked;
+      renderAll();
+    });
+
+    // Sekme Değişimi
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.activeTab = btn.dataset.tab;
+
+        ["classic", "espresso", "filter", "custom"].forEach((t) => {
+          document.getElementById(`tab-${t}`).style.display = t === state.activeTab ? "block" : "none";
+        });
+        updateDraftUI();
+      });
+    });
+
+    classicType.addEventListener("change", updateDraftUI);
+
+    sizePills.querySelectorAll(".pill-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        sizePills.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.selectedSize = btn.dataset.size;
+        updateDraftUI();
+      });
+    });
+
+    extraMinus.addEventListener("click", () => {
+      state.extraShots = Math.max(0, state.extraShots - 1);
+      updateDraftUI();
+    });
+
+    extraPlus.addEventListener("click", () => {
+      state.extraShots = Math.min(6, state.extraShots + 1);
+      updateDraftUI();
+    });
+
+    espressoPills.querySelectorAll(".pill-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        espressoPills.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.espressoShots = Number(btn.dataset.shots);
+        updateDraftUI();
+      });
+    });
+
+    filterChips.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        filterChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        filterMlInput.value = chip.dataset.ml;
+        updateDraftUI();
+      });
+    });
+
+    filterMlInput.addEventListener("input", () => {
+      filterChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+      updateDraftUI();
+    });
+
+    customChips.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        customChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        customMgInput.value = chip.dataset.mg;
+        state.customLabel = chip.dataset.label;
+        updateDraftUI();
+      });
+    });
+
+    customMgInput.addEventListener("input", () => {
+      state.customLabel = "Doğrudan Kafein";
+      customChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+      updateDraftUI();
+    });
+
+    startTimeInput.addEventListener("input", updateDraftUI);
+
+    durationChips.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        durationChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        durationInput.value = chip.dataset.dur;
+        updateDraftUI();
+      });
+    });
+
+    durationInput.addEventListener("input", () => {
+      durationChips.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
+      updateDraftUI();
+    });
+
+    // --- GÜNLÜK SINIR AŞIM ONAY UYARISI VE DÜZENLEME FONKSİYONLARI ---
+    function openLimitConfirmModal({ currentTotal, newTotal, addedTitle, addedMg, onConfirm }) {
+      const { dailyLimit, dailyLimitPerKg } = getThresholds();
+      const diff = newTotal - dailyLimit;
+      limitConfirmDesc.textContent =
+        "Bugün önerilen miktarın üstüne çıktınız. Yine de bu kafein alımını kaydetmek istiyor musunuz?";
+      limitConfirmDetails.innerHTML = `
+        <div>• Eklenecek / Güncellenecek: <strong>${addedTitle} (${addedMg} mg)</strong></div>
+        <div>• Mevcut Günlük Toplam: <strong>${currentTotal} mg</strong></div>
+        <div>• Yeni Günlük Toplam: <strong>${newTotal} mg</strong> (${(newTotal / state.weight).toFixed(1)} mg/kg)</div>
+        <div>• Kilonuza Göre Önerilen Sınır: <strong>${dailyLimit} mg</strong> (${dailyLimitPerKg} mg/kg — <strong>+${diff} mg aşım</strong>)</div>
+      `;
+      pendingActionCallback = onConfirm;
+      limitConfirmModal.classList.add("open");
+    }
+
+    function closeLimitConfirmModal() {
+      limitConfirmModal.classList.remove("open");
+      pendingActionCallback = null;
+    }
+
+    limitCancelBtn.addEventListener("click", closeLimitConfirmModal);
+
+    limitConfirmBtn.addEventListener("click", () => {
+      if (typeof pendingActionCallback === "function") {
+        pendingActionCallback();
+      }
+      closeLimitConfirmModal();
+    });
+
+    limitConfirmModal.addEventListener("click", (e) => {
+      if (e.target === limitConfirmModal) closeLimitConfirmModal();
+    });
+
+    function updateEditModalHint() {
+      const startMin = timeStrToMin(editStartTimeInput.value);
+      const durMin = Math.max(1, Number(editDurationInput.value) || 15);
+      editDurationWindowHint.textContent = `${minToTimeStr(startMin)} – ${minToTimeStr(startMin + durMin)} arası tüketim`;
+
+      editDurationChips.querySelectorAll(".chip").forEach((c) => {
+        c.classList.toggle("active", Number(c.dataset.dur) === durMin);
+      });
+    }
+
+    function openEditDrinkModal(id) {
+      const drink = state.drinks.find((d) => d.id === id);
+      if (!drink) return;
+      editingDrinkId = drink.id;
+      editTitleInput.value = drink.title;
+      editStartTimeInput.value = minToTimeStr(drink.startMin);
+      editDurationInput.value = drink.durationMin;
+      editMgInput.value = drink.mg;
+      updateEditModalHint();
+      editDrinkModal.classList.add("open");
+    }
+
+    function closeEditDrinkModal() {
+      editDrinkModal.classList.remove("open");
+      editingDrinkId = null;
+    }
+
+    editStartTimeInput.addEventListener("input", updateEditModalHint);
+    editDurationInput.addEventListener("input", updateEditModalHint);
+
+    editDurationChips.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        editDurationInput.value = chip.dataset.dur;
+        updateEditModalHint();
+      });
+    });
+
+    editCancelBtn.addEventListener("click", closeEditDrinkModal);
+
+    editDrinkModal.addEventListener("click", (e) => {
+      if (e.target === editDrinkModal) closeEditDrinkModal();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (limitConfirmModal.classList.contains("open")) closeLimitConfirmModal();
+        if (editDrinkModal.classList.contains("open")) closeEditDrinkModal();
+      }
+    });
+
+    editSaveBtn.addEventListener("click", () => {
+      if (editingDrinkId === null) return;
+      const drink = state.drinks.find((d) => d.id === editingDrinkId);
+      if (!drink) {
+        closeEditDrinkModal();
+        return;
+      }
+
+      const newTitle = (editTitleInput.value || "").trim() || drink.title;
+      const newStartMin = timeStrToMin(editStartTimeInput.value);
+      const newDurationMin = Math.max(1, Math.min(360, Number(editDurationInput.value) || drink.durationMin));
+      const newMg = Math.max(5, Number(editMgInput.value) || drink.mg);
+
+      const otherDrinksTotal = state.drinks
+        .filter((d) => d.id !== editingDrinkId)
+        .reduce((sum, d) => sum + (Number(d.mg) || 0), 0);
+      const newTotal = otherDrinksTotal + newMg;
+      const { dailyLimit } = getThresholds();
+
+      const applyEdit = () => {
+        drink.title = newTitle;
+        drink.startMin = newStartMin;
+        drink.durationMin = newDurationMin;
+        drink.mg = newMg;
+        closeEditDrinkModal();
+        renderAll();
+      };
+
+      if (newTotal > dailyLimit && newMg > drink.mg) {
+        const currentTotal = getTotalDailyMg();
+        closeEditDrinkModal();
+        openLimitConfirmModal({
+          currentTotal,
+          newTotal,
+          addedTitle: newTitle,
+          addedMg: newMg,
+          onConfirm: applyEdit
+        });
+      } else {
+        applyEdit();
+      }
+    });
+
+    addDrinkBtn.addEventListener("click", () => {
+      const draft = getCurrentDrinkDraft();
+      const currentTotal = getTotalDailyMg();
+      const newTotal = currentTotal + draft.mg;
+      const { dailyLimit } = getThresholds();
+
+      const performAdd = () => {
+        state.drinks.push({
+          id: Date.now() + Math.random(),
+          title: draft.title,
+          startMin: draft.startMin,
+          durationMin: draft.durationMin,
+          mg: draft.mg
+        });
+        renderAll();
+      };
+
+      if (newTotal > dailyLimit) {
+        openLimitConfirmModal({
+          currentTotal,
+          newTotal,
+          addedTitle: draft.title,
+          addedMg: draft.mg,
+          onConfirm: performAdd
+        });
+      } else {
+        performAdd();
+      }
+    });
+
+    drinksTableBody.addEventListener("click", (e) => {
+      const delBtn = e.target.closest(".btn-del");
+      if (delBtn) {
+        e.stopPropagation();
+        const id = Number(delBtn.dataset.id);
+        state.drinks = state.drinks.filter((d) => d.id !== id);
+        renderAll();
+        return;
+      }
+
+      const editBtn = e.target.closest(".btn-edit");
+      if (editBtn) {
+        e.stopPropagation();
+        const id = Number(editBtn.dataset.id);
+        openEditDrinkModal(id);
+        return;
+      }
+
+      const row = e.target.closest("tr.drink-row");
+      if (row && row.dataset.id) {
+        openEditDrinkModal(Number(row.dataset.id));
+      }
+    });
+
+    clearAllBtn.addEventListener("click", () => {
+      state.drinks = [];
+      renderAll();
+    });
+
+    applyOptimalPlanBtn.addEventListener("click", () => {
+      const dose1 = Number(applyOptimalPlanBtn.dataset.dose1) || 180;
+      const ml1 = Number(applyOptimalPlanBtn.dataset.ml1) || 400;
+      const dose2 = Number(applyOptimalPlanBtn.dataset.dose2) || 90;
+      const ml2 = Number(applyOptimalPlanBtn.dataset.ml2) || 200;
+
+      state.drinks = [
+        {
+          id: Date.now() + 1,
+          title: `Optimal Başlangıç (${ml1} ml Filtre Kahve Eşdeğeri)`,
+          startMin: 9 * 60,
+          durationMin: 45,
+          mg: dose1
+        },
+        {
+          id: Date.now() + 2,
+          title: `Optimal Takviye (${ml2} ml Filtre Kahve Eşdeğeri)`,
+          startMin: 12 * 60 + 30,
+          durationMin: 30,
+          mg: dose2
+        }
+      ];
+      renderAll();
+    });
+
+    // Grafik Üzerinde Fare Gezdirme (Tooltip)
+    canvas.addEventListener("mousemove", (e) => {
+      if (!latestSim) return;
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const padLeft = 48;
+      const padRight = 24;
+      const plotW = rect.width - padLeft - padRight;
+
+      if (mouseX < padLeft || mouseX > padLeft + plotW) {
+        tooltip.style.display = "none";
+        drawChart(null);
+        return;
+      }
+
+      const ratio = (mouseX - padLeft) / plotW;
+      const idx = Math.max(0, Math.min(latestSim.totalSpanMin, Math.round(ratio * latestSim.totalSpanMin)));
+      const pt = latestSim.points[idx];
+      const { flowMin, flowMax, riskLimit } = getThresholds();
+
+      let zoneText = "Bazal / Düşük Uyarılma";
+      if (pt.activeMg > riskLimit) zoneText = "⚠️ Riskli Sınır Üstü (Aşırı Uyarılma)";
+      else if (pt.activeMg > flowMax) zoneText = "Yüksek Uyarılma";
+      else if (pt.activeMg >= flowMin) zoneText = "✅ İdeal Flow (Odak) Bölgesi";
+
+      tooltip.style.display = "block";
+      tooltip.innerHTML = `
+        <strong>Saat ${pt.timeLabel}</strong><br/>
+        Aktif Kafein: <strong>${Math.round(pt.activeMg)} mg</strong> (${(pt.activeMg / state.weight).toFixed(2)} mg/kg)<br/>
+        Durum: ${zoneText}
+      `;
+
+      const tipX = Math.min(rect.width - 210, Math.max(10, mouseX + 12));
+      tooltip.style.left = `${tipX}px`;
+      tooltip.style.top = `28px`;
+
+      drawChart(idx);
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+      tooltip.style.display = "none";
+      drawChart(null);
+    });
+
+    window.addEventListener("resize", () => drawChart(null));
+
+    // Karanlık Mod (Dark Mode) Geçişi
+    const themeToggleBtn = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("kafeinflow_theme");
+    if (savedTheme === "dark" || savedTheme === "light") {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    }
+
+    themeToggleBtn.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      if (nextTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+      localStorage.setItem("kafeinflow_theme", nextTheme);
+      drawChart(null);
+    });
+
+    // İlk Yükleme
+    updateDraftUI();
+    renderAll();
+  </script>
+</body>
+</html>
