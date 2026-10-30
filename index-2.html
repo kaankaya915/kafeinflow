@@ -1120,6 +1120,11 @@
   </style>
 </head>
 <body>
+  <button type="button" class="theme-toggle" id="themeToggle" title="Temayı Değiştir" aria-label="Temayı Değiştir">
+    <span class="icon-moon">🌙</span>
+    <span class="icon-sun">☀️</span>
+  </button>
+
   <div class="container">
     <!-- Üst Başlık ve Kişisel Ayarlar -->
     <header>
@@ -1901,9 +1906,10 @@
       }
 
       // Yatay Kılavuz Çizgileri
-      ctx.strokeStyle = "#e2e8f0";
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      ctx.strokeStyle = isDark ? "#334155" : "#e2e8f0";
       ctx.lineWidth = 1;
-      ctx.fillStyle = "#64748b";
+      ctx.fillStyle = isDark ? "#94a3b8" : "#64748b";
       ctx.font = "11px sans-serif";
       ctx.textAlign = "right";
 
@@ -1950,10 +1956,10 @@
       // Bölge Etiketleri
       ctx.textAlign = "left";
       ctx.font = "600 11px sans-serif";
-      ctx.fillStyle = "#047857";
+      ctx.fillStyle = isDark ? "#34d399" : "#047857";
       ctx.fillText(`İdeal Flow Bölgesi (${flowMin}–${flowMax} mg)`, pad.left + 8, yFlowMax + 14);
 
-      ctx.fillStyle = "#b91c1c";
+      ctx.fillStyle = isDark ? "#f87171" : "#b91c1c";
       ctx.fillText(`Riskli Sınır / Aşırı Uyarılma (${riskLimit} mg)`, pad.left + 8, Math.max(pad.top + 12, yRisk - 6));
 
       // Eğri Yolu Oluşturucu
@@ -2553,6 +2559,25 @@
     });
 
     window.addEventListener("resize", () => drawChart(null));
+
+    // Karanlık Mod (Dark Mode) Geçişi
+    const themeToggleBtn = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("kafeinflow_theme");
+    if (savedTheme === "dark" || savedTheme === "light") {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    }
+
+    themeToggleBtn.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      if (nextTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+      localStorage.setItem("kafeinflow_theme", nextTheme);
+      drawChart(null);
+    });
 
     // İlk Yükleme
     updateDraftUI();
