@@ -23,6 +23,8 @@
       --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
       --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.05), #ffffff 60%);
       --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.05), #ffffff 60%);
+      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.05), #ffffff 60%);
+      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.10), #fff1f2 75%);
       --notice-bg: #fff1f2;
       --notice-border: #fecdd3;
       --notice-text: #9f1239;
@@ -59,6 +61,8 @@
       --shadow: 0 8px 28px -6px rgba(0, 0, 0, 0.45), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
       --metric-flow-bg: linear-gradient(to right, rgba(16, 185, 129, 0.14), #111827 60%);
       --metric-risk-bg: linear-gradient(to right, rgba(239, 68, 68, 0.14), #111827 60%);
+      --metric-daily-bg: linear-gradient(to right, rgba(245, 158, 11, 0.14), #111827 60%);
+      --metric-daily-exceeded-bg: linear-gradient(to right, rgba(239, 68, 68, 0.22), #3f1d24 75%);
       --notice-bg: #3f1d24;
       --notice-border: #7f1d1d;
       --notice-text: #fecdd3;
@@ -357,9 +361,15 @@
     /* Metric Strip */
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 14px;
       margin-bottom: 18px;
+    }
+
+    @media (max-width: 960px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (max-width: 640px) {
@@ -388,6 +398,22 @@
 
     .metric-box.peak {
       border-left: 4px solid var(--primary);
+    }
+
+    .metric-box.daily {
+      border-left: 4px solid var(--warn-amber);
+      background: var(--metric-daily-bg);
+      transition: all 0.2s;
+    }
+
+    .metric-box.daily.exceeded {
+      border-left-color: var(--risk-red);
+      border-color: var(--notice-border);
+      background: var(--metric-daily-exceeded-bg);
+    }
+
+    .metric-box.daily.exceeded .metric-value {
+      color: var(--notice-strong);
     }
 
     .metric-label {
@@ -479,7 +505,7 @@
       color: var(--text-muted);
     }
 
-    select, input[type="number"], input[type="time"] {
+    select, input[type="number"], input[type="time"], input[type="text"] {
       width: 100%;
       padding: 9px 12px;
       border: 1px solid var(--border);
@@ -843,16 +869,231 @@
       border: none;
       background: #fee2e2;
       color: #b91c1c;
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 6px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
     }
 
     .btn-del:hover {
       background: #fecaca;
+    }
+
+    .btn-edit {
+      border: none;
+      background: #dbeafe;
+      color: #1d4ed8;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .btn-edit:hover {
+      background: #bfdbfe;
+    }
+
+    .row-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    tr.drink-row {
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    tr.drink-row:hover {
+      background-color: var(--surface-alt);
+    }
+
+    /* Sağ Alt Günlük Sınır Özeti ve Aşım Uyarısı */
+    .daily-intake-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .daily-intake-bar strong {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .daily-intake-bar.exceeded {
+      background: var(--notice-bg);
+      border-color: var(--notice-border);
+      color: var(--notice-text);
+    }
+
+    .daily-intake-bar.exceeded strong {
+      color: var(--notice-strong);
+    }
+
+    .daily-limit-alert {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      background: var(--notice-bg);
+      border: 1px solid var(--notice-border);
+      color: var(--notice-text);
+      font-size: 0.79rem;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .daily-limit-alert.show {
+      display: flex;
+    }
+
+    /* Modals (Sınır Aşım Onayı & İçecek Düzenleme) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.2);
+      width: 100%;
+      max-width: 430px;
+      padding: 20px;
+      animation: modalFadeIn 0.16s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .modal-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-body {
+      font-size: 0.86rem;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .modal-warn-box {
+      background: var(--notice-bg);
+      border: 1px solid var(--notice-border);
+      border-radius: 10px;
+      padding: 11px 13px;
+      color: var(--notice-strong);
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--surface-alt);
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--step-hover);
+    }
+
+    .btn-danger-confirm {
+      padding: 9px 14px;
+      border: none;
+      border-radius: 9px;
+      background: var(--risk-red);
+      color: #ffffff;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-danger-confirm:hover {
+      background: #dc2626;
+    }
+
+    .btn-save {
+      padding: 9px 16px;
+      border: none;
+      border-radius: 9px;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-save:hover {
+      background: var(--primary-hover);
     }
 
     .empty-state {
@@ -932,6 +1173,12 @@
         <div class="metric-label">Günün Zirve Aktif Kafeini</div>
         <div class="metric-value" id="peakActiveText">0 mg</div>
         <div class="metric-note" id="flowDurationText">Flow bölgesinde geçirilen toplam süre: 0 saat</div>
+      </div>
+
+      <div class="metric-box daily" id="dailyMetricBox">
+        <div class="metric-label">Günlük Toplam Kafein Sınırı</div>
+        <div class="metric-value" id="dailyTotalText">240 / 399 mg</div>
+        <div class="metric-note" id="dailySubText">Kilonuza göre önerilen günlük üst sınır (5.7 mg/kg)</div>
       </div>
     </div>
 
@@ -1169,19 +1416,32 @@
             </div>
           </div>
 
-          <div class="card">
+          <div class="card" id="consumedDrinksCard">
             <div class="card-title">
               <span>Tüketilen İçecekler</span>
               <span class="sub" id="totalIntakeCount">0 içecek</span>
             </div>
+
+            <div class="daily-intake-bar" id="dailyIntakeBar">
+              <span>Günlük Alınan Toplam: <strong id="dailyIntakeSummary">0 / 399 mg</strong></span>
+              <span id="dailyIntakeRateNote" style="font-size:0.75rem; color:var(--text-muted);">Sınır: 5.7 mg/kg</span>
+            </div>
+
+            <div class="daily-limit-alert" id="dailyLimitAlert">
+              <span>⚠️</span>
+              <div id="dailyLimitAlertText">
+                <strong>Günlük Önerilen Kafein Sınırı Aşıldı!</strong> Bugün aldığınız toplam kafein kilonuza göre hesaplanan güvenli sınırı geçti.
+              </div>
+            </div>
+
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>İçecek</th>
+                    <th>İçecek <small style="font-weight:500; text-transform:none;">(düzenlemek için tıkla)</small></th>
                     <th>Saat & Süre</th>
                     <th>Kafein</th>
-                    <th></th>
+                    <th style="text-align:right;">İşlem</th>
                   </tr>
                 </thead>
                 <tbody id="drinksTableBody"></tbody>
@@ -1189,6 +1449,72 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: Günlük Kafein Sınırı Aşım Onay Uyarısı -->
+  <div class="modal-backdrop" id="limitConfirmModal" role="dialog" aria-modal="true" aria-labelledby="limitConfirmTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="limitConfirmTitle">⚠️ Bugün önerilen miktarın üstüne çıktınız</h3>
+      </div>
+      <div class="modal-body">
+        <p id="limitConfirmDesc">
+          Bu eklemeyle birlikte günlük toplam kafein tüketiminiz kilonuza göre önerilen güvenli sınırı aşacak.
+        </p>
+        <div class="modal-warn-box" id="limitConfirmDetails"></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="limitCancelBtn">İptal</button>
+        <button type="button" class="btn-danger-confirm" id="limitConfirmBtn">Ne yaptığımı biliyorum</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Geçmiş Kafein Alımını Düzenleme -->
+  <div class="modal-backdrop" id="editDrinkModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="editModalTitle">✎ Kafein Alımını Düzenle</h3>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editTitleInput">İçecek Adı</label>
+          <input type="text" id="editTitleInput" style="width:100%; padding:9px 12px; border:1px solid var(--border); border-radius:9px; font-size:0.9rem;" />
+        </div>
+
+        <div class="form-group">
+          <label for="editStartTimeInput">Başlangıç Saati <span class="hint">İçmeye başladığınız saat</span></label>
+          <input type="time" id="editStartTimeInput" />
+        </div>
+
+        <div class="form-group">
+          <label for="editDurationInput">İçiş Süresi <span class="hint" id="editDurationWindowHint">09:00 – 09:30 arası</span></label>
+          <div class="chip-row" id="editDurationChips" style="margin-bottom:8px;">
+            <span class="chip" data-dur="5">5 dk</span>
+            <span class="chip" data-dur="10">10 dk</span>
+            <span class="chip" data-dur="15">15 dk</span>
+            <span class="chip" data-dur="30">30 dk</span>
+            <span class="chip" data-dur="45">45 dk</span>
+            <span class="chip" data-dur="60">1 Saat</span>
+            <span class="chip" data-dur="90">1.5 Saat</span>
+            <span class="chip" data-dur="120">2 Saat</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" id="editDurationInput" min="1" max="360" step="1" />
+            <span style="font-size:0.82rem; color:var(--text-muted); white-space:nowrap;">dakika boyunca</span>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+          <label for="editMgInput">Kafein Miktarı (mg)</label>
+          <input type="number" id="editMgInput" min="5" max="1000" step="5" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" id="editCancelBtn">İptal</button>
+        <button type="button" class="btn-save" id="editSaveBtn">Kaydet</button>
       </div>
     </div>
   </div>
@@ -1335,6 +1661,35 @@
     const drinksTableBody = document.getElementById("drinksTableBody");
     const totalIntakeCount = document.getElementById("totalIntakeCount");
 
+    const dailyMetricBox = document.getElementById("dailyMetricBox");
+    const dailyTotalText = document.getElementById("dailyTotalText");
+    const dailySubText = document.getElementById("dailySubText");
+    const dailyIntakeBar = document.getElementById("dailyIntakeBar");
+    const dailyIntakeSummary = document.getElementById("dailyIntakeSummary");
+    const dailyIntakeRateNote = document.getElementById("dailyIntakeRateNote");
+    const dailyLimitAlert = document.getElementById("dailyLimitAlert");
+    const dailyLimitAlertText = document.getElementById("dailyLimitAlertText");
+
+    // Modal DOM Referansları
+    const limitConfirmModal = document.getElementById("limitConfirmModal");
+    const limitConfirmDesc = document.getElementById("limitConfirmDesc");
+    const limitConfirmDetails = document.getElementById("limitConfirmDetails");
+    const limitCancelBtn = document.getElementById("limitCancelBtn");
+    const limitConfirmBtn = document.getElementById("limitConfirmBtn");
+
+    const editDrinkModal = document.getElementById("editDrinkModal");
+    const editTitleInput = document.getElementById("editTitleInput");
+    const editStartTimeInput = document.getElementById("editStartTimeInput");
+    const editDurationInput = document.getElementById("editDurationInput");
+    const editDurationChips = document.getElementById("editDurationChips");
+    const editDurationWindowHint = document.getElementById("editDurationWindowHint");
+    const editMgInput = document.getElementById("editMgInput");
+    const editCancelBtn = document.getElementById("editCancelBtn");
+    const editSaveBtn = document.getElementById("editSaveBtn");
+
+    let pendingActionCallback = null;
+    let editingDrinkId = null;
+
     // Yardımcı Fonksiyonlar
     function minToTimeStr(totalMin) {
       const m = ((Math.round(totalMin) % 1440) + 1440) % 1440;
@@ -1353,7 +1708,13 @@
       const flowMin = Math.round(state.weight * 1.5 * mult);
       const flowMax = Math.round(state.weight * 3.0 * mult);
       const riskLimit = Math.round(state.weight * 4.2 * mult);
-      return { flowMin, flowMax, riskLimit, mult };
+      const dailyLimitPerKg = +(5.7 * mult).toFixed(1);
+      const dailyLimit = Math.round(state.weight * 5.7 * mult);
+      return { flowMin, flowMax, riskLimit, dailyLimit, dailyLimitPerKg, mult };
+    }
+
+    function getTotalDailyMg(drinksList = state.drinks) {
+      return drinksList.reduce((sum, d) => sum + (Number(d.mg) || 0), 0);
     }
 
     // Seçili Sekmeye Göre Eklenecek İçecek Bilgisini Hesapla
@@ -1712,7 +2073,10 @@
 
     // --- ANA GÜNCELLEME FONKSİYONU ---
     function renderAll() {
-      const { flowMin, flowMax, riskLimit, mult } = getThresholds();
+      const { flowMin, flowMax, riskLimit, dailyLimit, dailyLimitPerKg, mult } = getThresholds();
+      const totalDailyMg = getTotalDailyMg();
+      const totalDailyPerKg = (totalDailyMg / state.weight).toFixed(1);
+      const isDailyExceeded = totalDailyMg > dailyLimit;
 
       // Üst Kartları Güncelle
       flowRangeText.textContent = `${flowMin} – ${flowMax} mg`;
@@ -1720,6 +2084,30 @@
       riskLimitText.textContent = `${riskLimit} mg üstü`;
       riskSubText.textContent = `Aşırı uyarılma sınırı (${(4.2 * mult).toFixed(1)} mg/kg)`;
       noticeLimitSpan.textContent = `${riskLimit} mg`;
+
+      dailyTotalText.textContent = `${totalDailyMg} / ${dailyLimit} mg`;
+      if (isDailyExceeded) {
+        dailyMetricBox.classList.add("exceeded");
+        dailySubText.textContent = `⚠️ Günlük sınır ${totalDailyMg - dailyLimit} mg aşıldı! (${totalDailyPerKg} / ${dailyLimitPerKg} mg/kg)`;
+      } else {
+        dailyMetricBox.classList.remove("exceeded");
+        dailySubText.textContent = `Önerilen günlük sınır: ${dailyLimit} mg (${dailyLimitPerKg} mg/kg)`;
+      }
+
+      // Sağ Alttaki Günlük Kafein Özeti ve Aşım Uyarısını Güncelle
+      dailyIntakeSummary.textContent = `${totalDailyMg} / ${dailyLimit} mg (${totalDailyPerKg} mg/kg)`;
+      dailyIntakeRateNote.textContent = `Önerilen: maks. ${dailyLimitPerKg} mg/kg`;
+
+      if (isDailyExceeded) {
+        dailyIntakeBar.classList.add("exceeded");
+        dailyLimitAlert.classList.add("show");
+        dailyLimitAlertText.innerHTML = `
+          <strong>Günlük Kafein Sınırı Aşıldı!</strong> Bugün toplam <strong>${totalDailyMg} mg</strong> (${totalDailyPerKg} mg/kg) kafein aldınız. Kilonuza (${state.weight} kg) göre önerilen günlük üst sınır <strong>${dailyLimit} mg</strong> seviyesindedir (<strong>+${totalDailyMg - dailyLimit} mg</strong> aşım).
+        `;
+      } else {
+        dailyIntakeBar.classList.remove("exceeded");
+        dailyLimitAlert.classList.remove("show");
+      }
 
       // Simülasyonu Çalıştır
       latestSim = simulateCaffeineCurve();
@@ -1786,12 +2174,18 @@
         sorted.forEach((d) => {
           const endStr = minToTimeStr(d.startMin + d.durationMin);
           const tr = document.createElement("tr");
+          tr.className = "drink-row";
+          tr.dataset.id = d.id;
+          tr.title = "Bu kafein alımını düzenlemek için tıklayın";
           tr.innerHTML = `
             <td><strong>${d.title}</strong></td>
             <td>${minToTimeStr(d.startMin)} – ${endStr} <small style="color:var(--text-muted);">(${d.durationMin} dk)</small></td>
             <td><strong>${d.mg} mg</strong></td>
-            <td style="text-align:right;">
-              <button class="btn-del" data-id="${d.id}" title="Sil">×</button>
+            <td style="text-align:right; white-space:nowrap;">
+              <div class="row-actions">
+                <button type="button" class="btn-edit" data-id="${d.id}" title="Düzenle">✎</button>
+                <button type="button" class="btn-del" data-id="${d.id}" title="Sil">×</button>
+              </div>
             </td>
           `;
           drinksTableBody.appendChild(tr);
@@ -1903,24 +2297,185 @@
       updateDraftUI();
     });
 
+    // --- GÜNLÜK SINIR AŞIM ONAY UYARISI VE DÜZENLEME FONKSİYONLARI ---
+    function openLimitConfirmModal({ currentTotal, newTotal, addedTitle, addedMg, onConfirm }) {
+      const { dailyLimit, dailyLimitPerKg } = getThresholds();
+      const diff = newTotal - dailyLimit;
+      limitConfirmDesc.textContent =
+        "Bugün önerilen miktarın üstüne çıktınız. Yine de bu kafein alımını kaydetmek istiyor musunuz?";
+      limitConfirmDetails.innerHTML = `
+        <div>• Eklenecek / Güncellenecek: <strong>${addedTitle} (${addedMg} mg)</strong></div>
+        <div>• Mevcut Günlük Toplam: <strong>${currentTotal} mg</strong></div>
+        <div>• Yeni Günlük Toplam: <strong>${newTotal} mg</strong> (${(newTotal / state.weight).toFixed(1)} mg/kg)</div>
+        <div>• Kilonuza Göre Önerilen Sınır: <strong>${dailyLimit} mg</strong> (${dailyLimitPerKg} mg/kg — <strong>+${diff} mg aşım</strong>)</div>
+      `;
+      pendingActionCallback = onConfirm;
+      limitConfirmModal.classList.add("open");
+    }
+
+    function closeLimitConfirmModal() {
+      limitConfirmModal.classList.remove("open");
+      pendingActionCallback = null;
+    }
+
+    limitCancelBtn.addEventListener("click", closeLimitConfirmModal);
+
+    limitConfirmBtn.addEventListener("click", () => {
+      if (typeof pendingActionCallback === "function") {
+        pendingActionCallback();
+      }
+      closeLimitConfirmModal();
+    });
+
+    limitConfirmModal.addEventListener("click", (e) => {
+      if (e.target === limitConfirmModal) closeLimitConfirmModal();
+    });
+
+    function updateEditModalHint() {
+      const startMin = timeStrToMin(editStartTimeInput.value);
+      const durMin = Math.max(1, Number(editDurationInput.value) || 15);
+      editDurationWindowHint.textContent = `${minToTimeStr(startMin)} – ${minToTimeStr(startMin + durMin)} arası tüketim`;
+
+      editDurationChips.querySelectorAll(".chip").forEach((c) => {
+        c.classList.toggle("active", Number(c.dataset.dur) === durMin);
+      });
+    }
+
+    function openEditDrinkModal(id) {
+      const drink = state.drinks.find((d) => d.id === id);
+      if (!drink) return;
+      editingDrinkId = drink.id;
+      editTitleInput.value = drink.title;
+      editStartTimeInput.value = minToTimeStr(drink.startMin);
+      editDurationInput.value = drink.durationMin;
+      editMgInput.value = drink.mg;
+      updateEditModalHint();
+      editDrinkModal.classList.add("open");
+    }
+
+    function closeEditDrinkModal() {
+      editDrinkModal.classList.remove("open");
+      editingDrinkId = null;
+    }
+
+    editStartTimeInput.addEventListener("input", updateEditModalHint);
+    editDurationInput.addEventListener("input", updateEditModalHint);
+
+    editDurationChips.querySelectorAll(".chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        editDurationInput.value = chip.dataset.dur;
+        updateEditModalHint();
+      });
+    });
+
+    editCancelBtn.addEventListener("click", closeEditDrinkModal);
+
+    editDrinkModal.addEventListener("click", (e) => {
+      if (e.target === editDrinkModal) closeEditDrinkModal();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (limitConfirmModal.classList.contains("open")) closeLimitConfirmModal();
+        if (editDrinkModal.classList.contains("open")) closeEditDrinkModal();
+      }
+    });
+
+    editSaveBtn.addEventListener("click", () => {
+      if (editingDrinkId === null) return;
+      const drink = state.drinks.find((d) => d.id === editingDrinkId);
+      if (!drink) {
+        closeEditDrinkModal();
+        return;
+      }
+
+      const newTitle = (editTitleInput.value || "").trim() || drink.title;
+      const newStartMin = timeStrToMin(editStartTimeInput.value);
+      const newDurationMin = Math.max(1, Math.min(360, Number(editDurationInput.value) || drink.durationMin));
+      const newMg = Math.max(5, Number(editMgInput.value) || drink.mg);
+
+      const otherDrinksTotal = state.drinks
+        .filter((d) => d.id !== editingDrinkId)
+        .reduce((sum, d) => sum + (Number(d.mg) || 0), 0);
+      const newTotal = otherDrinksTotal + newMg;
+      const { dailyLimit } = getThresholds();
+
+      const applyEdit = () => {
+        drink.title = newTitle;
+        drink.startMin = newStartMin;
+        drink.durationMin = newDurationMin;
+        drink.mg = newMg;
+        closeEditDrinkModal();
+        renderAll();
+      };
+
+      if (newTotal > dailyLimit && newMg > drink.mg) {
+        const currentTotal = getTotalDailyMg();
+        closeEditDrinkModal();
+        openLimitConfirmModal({
+          currentTotal,
+          newTotal,
+          addedTitle: newTitle,
+          addedMg: newMg,
+          onConfirm: applyEdit
+        });
+      } else {
+        applyEdit();
+      }
+    });
+
     addDrinkBtn.addEventListener("click", () => {
       const draft = getCurrentDrinkDraft();
-      state.drinks.push({
-        id: Date.now() + Math.random(),
-        title: draft.title,
-        startMin: draft.startMin,
-        durationMin: draft.durationMin,
-        mg: draft.mg
-      });
-      renderAll();
+      const currentTotal = getTotalDailyMg();
+      const newTotal = currentTotal + draft.mg;
+      const { dailyLimit } = getThresholds();
+
+      const performAdd = () => {
+        state.drinks.push({
+          id: Date.now() + Math.random(),
+          title: draft.title,
+          startMin: draft.startMin,
+          durationMin: draft.durationMin,
+          mg: draft.mg
+        });
+        renderAll();
+      };
+
+      if (newTotal > dailyLimit) {
+        openLimitConfirmModal({
+          currentTotal,
+          newTotal,
+          addedTitle: draft.title,
+          addedMg: draft.mg,
+          onConfirm: performAdd
+        });
+      } else {
+        performAdd();
+      }
     });
 
     drinksTableBody.addEventListener("click", (e) => {
-      const btn = e.target.closest(".btn-del");
-      if (!btn) return;
-      const id = Number(btn.dataset.id);
-      state.drinks = state.drinks.filter((d) => d.id !== id);
-      renderAll();
+      const delBtn = e.target.closest(".btn-del");
+      if (delBtn) {
+        e.stopPropagation();
+        const id = Number(delBtn.dataset.id);
+        state.drinks = state.drinks.filter((d) => d.id !== id);
+        renderAll();
+        return;
+      }
+
+      const editBtn = e.target.closest(".btn-edit");
+      if (editBtn) {
+        e.stopPropagation();
+        const id = Number(editBtn.dataset.id);
+        openEditDrinkModal(id);
+        return;
+      }
+
+      const row = e.target.closest("tr.drink-row");
+      if (row && row.dataset.id) {
+        openEditDrinkModal(Number(row.dataset.id));
+      }
     });
 
     clearAllBtn.addEventListener("click", () => {
